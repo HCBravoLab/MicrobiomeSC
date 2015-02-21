@@ -1,13 +1,21 @@
 package chiSquare;
 
+import java.nio.ByteBuffer;
+
+import network.Server;
+
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
+
 import chiSquare.PrepareData;
 import chiSquare.PrepareData.StatisticsData;
-
 
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
-import circuits.arithmetic.FixedPointLib;
 import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
@@ -34,18 +42,14 @@ public class ChiSquare {
 			T[] d = lib.add(aliceControl[i][1], bobControl[i][1]);
 			T[] g = lib.add(a, c);
 			T[] k = lib.add(b, d);
-			T[] j = lib.add(a, b);
-			T[] l = lib.add(d, c);
-	
+
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
 			T[] fc = lib.toSecureFloat(c, flib);
 			T[] fd = lib.toSecureFloat(d, flib);
 			T[] fg = lib.toSecureFloat(g, flib);
 			T[] fk = lib.toSecureFloat(k, flib);
-			T[] fj = lib.toSecureFloat(j, flib);
-			T[] fl = lib.toSecureFloat(l, flib);
-	
+			
 			T[] tmp = flib.sub(flib.multiply(fa, fd), flib.multiply(fb, fc));
 			tmp = flib.multiply(tmp, tmp);
 			res[i] = flib.div(tmp, flib.multiply(fg, fk));
@@ -60,30 +64,53 @@ public class ChiSquare {
 		T[][][] bobControl;
 
 		int numOfTests;
+
+		double extraFactor;
+		boolean precise;
 		@Override
-		public void prepareInput(CompEnv<T> gen) {
-			StatisticsData caseSta = PrepareData.readFile(args[0]);
-			StatisticsData controlSta = PrepareData.readFile(args[1]);
-			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
-			T[] l = flib.publicValue(0.0);
+		public void prepareInput(CompEnv<T> gen) throws Exception {			
+			Options options = new Options();
+		options.addOption("h", false, "high precision");
+		options.addOption("s", "case", true, "case");
+		options.addOption("t", "control", true, "control");
 
-			boolean[][][] caseData = new boolean[caseSta.numberOftuples][2][l.length];
-			
-			for(int i = 0; i < caseSta.numberOftuples; ++i) {
-				caseData[i][0] = Utils.fromInt(caseSta.data[i].numOfPresent, Width);
-				caseData[i][1] = Utils.fromInt(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent, Width);
-			}
+		CommandLineParser parser = new BasicParser();
+		CommandLine cmd = parser.parse(options, args);
 
-			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][Width];
-			for(int i = 0; i < controlSta.numberOftuples; ++i) {
-				controlData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
-				controlData[i][1] = Utils.fromInt(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent, Width);
-			}
-			aliceCase = gen.inputOfAlice(caseData);
-			aliceControl = gen.inputOfAlice(controlData);
-			bobCase = gen.inputOfBob(caseData);
-			bobControl = gen.inputOfBob(controlData);
-			numOfTests = caseSta.numberOftuples;
+		precise = cmd.hasOption("t");
+		if(!cmd.hasOption("s") || !cmd.hasOption("t")) {
+			throw new Exception("wrong input");
+		}
+		StatisticsData caseInput = PrepareData.readFile(cmd.getOptionValue("s"));
+		StatisticsData controlInput = PrepareData.readFile(cmd.getOptionValue("t"));
+		chiSquare.Statistics[] caseSta = caseInput.data;
+		Statistics[] controlSta = controlInput.data;
+		boolean[][][] caseData = new boolean[caseSta.length][2][Width];
+
+		int caseLength = ByteBuffer.wrap(Server.readBytes(gen.is, 4)).getInt();
+		int controlLength = ByteBuffer.wrap(Server.readBytes(gen.is, 4)).getInt();
+
+		//extraFactor = n/(r*s)
+		
+		extraFactor = 2*(caseLength + controlLength + caseInput.numberOftuples+ controlInput.numberOftuples);
+		extraFactor /= 2*(caseLength + caseInput.numberOftuples);
+		extraFactor /= 2*(controlLength + controlInput.numberOftuples);
+		
+		for(int i = 0; i < caseSta.length; ++i) {
+			caseData[i][0] = Utils.fromInt(caseSta[i].numOfPresent, Width);
+			caseData[i][1] = Utils.fromInt(caseSta[i].totalNum - caseSta[i].numOfPresent, Width);
+		}
+
+		boolean[][][] controlData = new boolean[controlSta.length][2][Width];
+		for(int i = 0; i < controlSta.length; ++i) {
+			controlData[i][0] = Utils.fromInt(controlSta[i].numOfPresent, Width);
+			controlData[i][1] = Utils.fromInt(controlSta[i].totalNum - controlSta[i].numOfPresent, Width);
+		}
+		aliceCase = gen.inputOfAlice(caseData);
+		aliceControl = gen.inputOfAlice(controlData);
+		bobCase = gen.inputOfBob(caseData);
+		bobControl = gen.inputOfBob(controlData);
+		numOfTests = caseSta.length;
 		}
 
 		T[][] res;
@@ -94,11 +121,18 @@ public class ChiSquare {
 
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
-			for(int i = 0; i < numOfTests; ++i)
-				System.out.println(flib.outputToAlice(res[i]));
+			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
+			System.out.println("chi,p-value");
+			for(int i = 0; i < numOfTests; ++i){
+				double chi = flib.outputToAlice(res[i]) * extraFactor;
+				if(chi == 0.0){
+					System.out.println("NA,NA");
+					continue;
+				}
+				System.out.println(chi + "," + (1-chiDistribution.cumulativeProbability(chi)));
+			}
 		}
-
 	}
 
 	public static class Evaluator<T> extends EvaRunnable<T> {
@@ -107,30 +141,48 @@ public class ChiSquare {
 		T[][][] aliceControl;
 		T[][][] bobControl;
 		int numOfTests;
-		@Override
-		public void prepareInput(CompEnv<T> gen) {
-			StatisticsData caseSta = PrepareData.readFile(args[0]);
-			StatisticsData controlSta = PrepareData.readFile(args[1]);
-			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
-			T[] l = flib.publicValue(0.0);
+		boolean precise;
 
-			boolean[][][] caseData = new boolean[caseSta.numberOftuples][2][l.length];
-			
-			for(int i = 0; i < caseSta.numberOftuples; ++i) {
-				caseData[i][0] = Utils.fromInt(caseSta.data[i].numOfPresent, Width);
-				caseData[i][1] = Utils.fromInt(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent, Width);
+		@Override
+		public void prepareInput(CompEnv<T> gen) throws Exception {
+			Options options = new Options();
+			options.addOption("h", "high_precision", false, "high precision");
+			options.addOption("s", "case", true, "case");
+			options.addOption("t", "control", true, "control");
+
+			CommandLineParser parser = new BasicParser();
+			CommandLine cmd = parser.parse(options, args);
+
+			precise = cmd.hasOption("h");
+			if(!cmd.hasOption("s") || !cmd.hasOption("t")) {
+				throw new Exception("wrong input");
 			}
 
-			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][Width];
-			for(int i = 0; i < controlSta.numberOftuples; ++i) {
-				controlData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
-				controlData[i][1] = Utils.fromInt(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent, Width);
+			StatisticsData caseInput = PrepareData.readFile(cmd.getOptionValue("s"));
+			StatisticsData controlInput = PrepareData.readFile(cmd.getOptionValue("t"));
+			Statistics[] caseSta = caseInput.data;
+			Statistics[] controlSta = controlInput.data;
+			boolean[][][] caseData = new boolean[caseSta.length][2][Width];
+
+			gen.os.write(ByteBuffer.allocate(4).putInt(caseInput.numberOftuples).array());
+			gen.os.write(ByteBuffer.allocate(4).putInt(controlInput.numberOftuples).array());
+			gen.os.flush();
+
+			for(int i = 0; i < caseSta.length; ++i) {
+				caseData[i][0] = Utils.fromInt(caseSta[i].numOfPresent, Width);
+				caseData[i][1] = Utils.fromInt(caseSta[i].totalNum - caseSta[i].numOfPresent, Width);
+			}
+
+			boolean[][][] controlData = new boolean[controlSta.length][2][Width];
+			for(int i = 0; i < controlSta.length; ++i) {
+				controlData[i][0] = Utils.fromInt(controlSta[i].numOfPresent, Width);
+				controlData[i][1] = Utils.fromInt(controlSta[i].totalNum - controlSta[i].numOfPresent, Width);
 			}
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);
 			bobCase = gen.inputOfBob(caseData);
 			bobControl = gen.inputOfBob(controlData);
-			numOfTests = caseSta.numberOftuples;
+			numOfTests = caseSta.length;
 		}
 		T[][] res;
 
@@ -141,7 +193,7 @@ public class ChiSquare {
 
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
+			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
 			for(int i = 0; i < numOfTests; ++i)
 				flib.outputToAlice(res[i]);
 		}

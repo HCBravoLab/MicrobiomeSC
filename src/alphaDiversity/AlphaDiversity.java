@@ -68,6 +68,7 @@ public class AlphaDiversity {
 		    
 		    T[] caseVarianceSquared = flib.multiply(caseVariance, caseVariance);
 		    T[] controlVarianceSquared = flib.multiply(controlVariance, controlVariance);
+		    
 		    T[] degreesOfFreedomTop = flib.add(flib.div(caseVariance, caseNum), flib.div(controlVariance, controlNum));
 		    degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
 		    T[] degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));

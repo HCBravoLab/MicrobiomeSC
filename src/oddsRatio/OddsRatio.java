@@ -80,10 +80,10 @@ public class OddsRatio {
 		@Override
 		public void prepareOutput(CompEnv<T> env) {
 			FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
+			System.out.println("Odds Ratio");
 			for(int i = 0; i < res.length; ++i)
-				System.out.println("odds ratio:  " + flib.outputToAlice(res[i]));
+				System.out.println(flib.outputToAlice(res[i]));
 		}
-
 	}
 
 	public static class Evaluator<T> extends EvaRunnable<T> {

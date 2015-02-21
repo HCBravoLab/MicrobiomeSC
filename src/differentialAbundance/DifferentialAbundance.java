@@ -56,10 +56,10 @@ public class DifferentialAbundance {
 		    controlNum = flib.add(aliceControl[i][2], bobControl[i][2]);
 		    
 		    caseMeanAbundance = flib.div(caseTotalSum, caseNum);
+		    
 		    caseVarianceSecondTerm = flib.div(flib.multiply(caseTotalSum, caseTotalSum), caseNum);
 		    caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
-		    
-		    controlMeanAbundance = flib.div(controlTotalSum, controlNum);
+		    controlMeanAbundance = flib.div(controlTotalSum, controlNum);		    
 		    controlVarianceSecondTerm = flib.div(flib.multiply(controlTotalSum, controlTotalSum), controlNum);
 		    controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
 		 
@@ -69,13 +69,17 @@ public class DifferentialAbundance {
 		    tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
 		    tStat = flib.div(tUpper, tLowerSqrt);
 
-		    T[] caseVarianceSquared = flib.multiply(caseVariance, caseVariance);
-		    T[] controlVarianceSquared = flib.multiply(controlVariance, controlVariance);
 		    T[] degreesOfFreedomTop = flib.add(flib.div(caseVariance, caseNum), flib.div(controlVariance, controlNum));
 		    degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
 		    
-		    T[] degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
-		    T[] degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
+		    T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, flib.publicValue(1.0)));
+		    degreesOfFreedomBottomFirst = flib.multiply(degreesOfFreedomBottomFirst, degreesOfFreedomBottomFirst);
+		    degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, flib.publicValue(1.0)));
+		   
+		    T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, flib.publicValue(1.0)));
+		    degreesOfFreedomBottomSecond = flib.multiply(degreesOfFreedomBottomSecond, degreesOfFreedomBottomSecond);
+		    degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, flib.publicValue(1.0)));
+
 		    T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
 		    res[i][0] = tStat;
 		    res[i][1] = degreesOfFreedom;
@@ -131,8 +135,12 @@ public class DifferentialAbundance {
 			for(int i = 0; i < numOfTests; i++){
 				double tStat = flib.outputToAlice(res[i][0]);
 				double df = flib.outputToAlice(res[i][1]);
-				if (df < 1.0){
-					System.out.println(tStat +"," + df + "," + "0.0");
+				if (tStat == 0.0){
+					System.out.println("NA,NA,NA");
+					continue;
+				}
+				if (df <= 0.0){
+					System.out.println(tStat +",NA,NA");
 					continue;
 				}
 				TDistribution tDistribution = new TDistribution(df);
@@ -170,7 +178,6 @@ public class DifferentialAbundance {
 				controlData[i][1] = Utils.fromFloat(controlSta.data[i].sumOfSquares, FWidth, FOffset);
 				controlData[i][2] = Utils.fromFloat(controlSta.data[i].numOfSamples, FWidth, FOffset);
 			}
-			
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);
 			bobCase = gen.inputOfBob(caseData);

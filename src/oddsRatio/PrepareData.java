@@ -1,13 +1,10 @@
-package microbiomeOddsRatio;
-
+package oddsRatio;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
-
-import microbiomeOddsRatio.Statistics;
-import microbiomeOddsRatio.PrepareData.StatisticsData;
+import oddsRatio.Statistics;
 
 public class PrepareData {
 	
@@ -47,9 +44,5 @@ public class PrepareData {
 		d.data = lsta.toArray(new Statistics[0]);
 		d.numberOftuples = d.data.length;
 		return d;
-	}
-	
-	public static void main(String[] args) {
-		readFile("data/case_chr2_29504091_30044866.txt");
 	}
 }

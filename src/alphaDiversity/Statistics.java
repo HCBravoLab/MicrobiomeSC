@@ -1,4 +1,4 @@
-package alphaDiversityMicrobiome;
+package alphaDiversity;
 
 public class Statistics {
 	public double simpsonsIndex;

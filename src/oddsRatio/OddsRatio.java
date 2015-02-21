@@ -1,7 +1,7 @@
-package microbiomeOddsRatio;
+package oddsRatio;
 
-import microbiomeOddsRatio.PrepareData;
-import microbiomeOddsRatio.PrepareData.StatisticsData;
+import oddsRatio.PrepareData;
+import oddsRatio.PrepareData.StatisticsData;
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
@@ -9,7 +9,7 @@ import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
 
-public class MicrobiomeOddsRatio {
+public class OddsRatio {
 	static public int Width = 9;
 	static public int FWidth = 48;
 	static public int FOffset = 14;

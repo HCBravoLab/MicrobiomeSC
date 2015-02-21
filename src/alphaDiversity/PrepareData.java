@@ -1,13 +1,10 @@
-package alphaDiversityMicrobiome;
-
+package alphaDiversity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.Scanner;
 
-import alphaDiversityMicrobiome.Statistics;
+import alphaDiversity.Statistics;
 
 public class PrepareData {
 	
@@ -48,9 +45,5 @@ public class PrepareData {
 			e.printStackTrace();
 		}
 		return sta;
-	}
-	
-	public static void main(String[] args) {
-		readFile("data/case_chr2_29504091_30044866.txt");
 	}
 }

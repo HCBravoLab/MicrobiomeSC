@@ -34,6 +34,8 @@ public class ChiSquare {
 			T[] d = lib.add(aliceControl[i][1], bobControl[i][1]);
 			T[] g = lib.add(a, c);
 			T[] k = lib.add(b, d);
+			T[] j = lib.add(a, b);
+			T[] l = lib.add(d, c);
 	
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
@@ -41,11 +43,12 @@ public class ChiSquare {
 			T[] fd = lib.toSecureFloat(d, flib);
 			T[] fg = lib.toSecureFloat(g, flib);
 			T[] fk = lib.toSecureFloat(k, flib);
+			T[] fj = lib.toSecureFloat(j, flib);
+			T[] fl = lib.toSecureFloat(l, flib);
 	
 			T[] tmp = flib.sub(flib.multiply(fa, fd), flib.multiply(fb, fc));
 			tmp = flib.multiply(tmp, tmp);
 			res[i] = flib.div(tmp, flib.multiply(fg, fk));
-			return res;
 		}
 		return res;
 
@@ -67,17 +70,13 @@ public class ChiSquare {
 			boolean[][][] caseData = new boolean[caseSta.numberOftuples][2][l.length];
 			
 			for(int i = 0; i < caseSta.numberOftuples; ++i) {
-				System.out.println(caseSta.data[i].numOfPresent);
 				caseData[i][0] = Utils.fromInt(caseSta.data[i].numOfPresent, Width);
-				System.out.println(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent);
 				caseData[i][1] = Utils.fromInt(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent, Width);
 			}
 
 			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][Width];
 			for(int i = 0; i < controlSta.numberOftuples; ++i) {
-				caseData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
 				controlData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
-				System.out.println(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent);
 				controlData[i][1] = Utils.fromInt(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent, Width);
 			}
 			aliceCase = gen.inputOfAlice(caseData);
@@ -118,17 +117,13 @@ public class ChiSquare {
 			boolean[][][] caseData = new boolean[caseSta.numberOftuples][2][l.length];
 			
 			for(int i = 0; i < caseSta.numberOftuples; ++i) {
-				System.out.println(caseSta.data[i].numOfPresent);
 				caseData[i][0] = Utils.fromInt(caseSta.data[i].numOfPresent, Width);
-				System.out.println(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent);
 				caseData[i][1] = Utils.fromInt(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent, Width);
 			}
 
 			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][Width];
 			for(int i = 0; i < controlSta.numberOftuples; ++i) {
-				caseData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
 				controlData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
-				System.out.println(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent);
 				controlData[i][1] = Utils.fromInt(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent, Width);
 			}
 			aliceCase = gen.inputOfAlice(caseData);

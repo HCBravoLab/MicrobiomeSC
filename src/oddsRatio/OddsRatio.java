@@ -35,8 +35,8 @@ public class OddsRatio {
 			res[i] = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
 		}
 		return res;
-
 	}
+	
 	public static class Generator<T> extends GenRunnable<T> {
 		T[][][] aliceCase;
 		T[][][] bobCase;

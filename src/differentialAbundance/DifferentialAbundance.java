@@ -13,8 +13,8 @@ import org.apache.commons.math3.distribution.TDistribution;
 
 public class DifferentialAbundance {
 	static public int Width = 9;
-	static public int FWidth = 48;
-	static public int FOffset = 14;
+	static public int FWidth = 50;
+	static public int FOffset = 11;
 
 	public static<T> T[][][] compute(CompEnv<T> gen, T[][][] aliceCase,
 			T[][][] bobCase,

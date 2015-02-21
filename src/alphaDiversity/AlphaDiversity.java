@@ -10,14 +10,13 @@ import org.apache.commons.math3.distribution.*;
 
 public class AlphaDiversity {
 	static public int Width = 9;
-	static public int FWidth = 48;
-	static public int FOffset = 14;
+	static public int FWidth = 50;
+	static public int FOffset = 11;
 
 	public static<T> T[][] compute(CompEnv<T> gen, T[][][] aliceCase,
 			T[][][] bobCase,
 			T[][][] aliceControl,
 			T[][][] bobControl, int numOfTests) {
-		
 		
 		T[][] res = gen.newTArray(numOfTests, 0);
 		FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);

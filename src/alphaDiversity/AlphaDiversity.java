@@ -66,16 +66,14 @@ public class AlphaDiversity {
 		    tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
 		    tStat = flib.div(tUpper, tLowerSqrt);
 		    
-		    T[] degreesOfFreedomTop;
-		    T[] degreesOfFreedomBottomFirst;
-		    T[] degreesOfFreedomBottomSecond;
 		    T[] caseVarianceSquared = flib.multiply(caseVariance, caseVariance);
 		    T[] controlVarianceSquared = flib.multiply(controlVariance, controlVariance);
-		    degreesOfFreedomTop = flib.add(flib.div(caseVariance, caseNum), flib.div(controlVariance, controlNum));
+		    T[] degreesOfFreedomTop = flib.add(flib.div(caseVariance, caseNum), flib.div(controlVariance, controlNum));
 		    degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
-		    degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
-		    degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
+		    T[] degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
+		    T[] degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
 		    T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
+		    
 		    res[0] = tStat;
 		    res[1] = degreesOfFreedom;
 		    return res;

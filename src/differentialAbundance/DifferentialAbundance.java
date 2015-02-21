@@ -69,15 +69,13 @@ public class DifferentialAbundance {
 		    tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
 		    tStat = flib.div(tUpper, tLowerSqrt);
 
-		    T[] degreesOfFreedomTop;
-		    T[] degreesOfFreedomBottomFirst;
-		    T[] degreesOfFreedomBottomSecond;
 		    T[] caseVarianceSquared = flib.multiply(caseVariance, caseVariance);
 		    T[] controlVarianceSquared = flib.multiply(controlVariance, controlVariance);
-		    degreesOfFreedomTop = flib.add(flib.div(caseVariance, caseNum), flib.div(controlVariance, controlNum));
+		    T[] degreesOfFreedomTop = flib.add(flib.div(caseVariance, caseNum), flib.div(controlVariance, controlNum));
 		    degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
-		    degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
-		    degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
+		    
+		    T[] degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
+		    T[] degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
 		    T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
 		    res[i][0] = tStat;
 		    res[i][1] = degreesOfFreedom;
@@ -128,20 +126,20 @@ public class DifferentialAbundance {
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+
+			System.out.println("t-stat,Degrees Of Freedom,p-value");
 			for(int i = 0; i < numOfTests; i++){
 				double tStat = flib.outputToAlice(res[i][0]);
 				double df = flib.outputToAlice(res[i][1]);
-				System.out.print("t-stat = " + tStat + " ");
-				System.out.print("degrees of freedom = " + df + " ");
 				if (df < 1.0){
-					System.out.print("\n");
+					System.out.println(tStat +"," + df + "," + "0.0");
 					continue;
 				}
 				TDistribution tDistribution = new TDistribution(df);
 				if(tStat > 0.0)
-					System.out.println("p-value " + (1-tDistribution.cumulativeProbability(tStat))*2.0 + "\n");
+					System.out.println(tStat + "," + df + "," + (1-tDistribution.cumulativeProbability(tStat))*2.0);
 				else
-					System.out.println("p-value " + tDistribution.cumulativeProbability(tStat)*2.0 + "\n");
+					System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
 			}
 		}
 	}

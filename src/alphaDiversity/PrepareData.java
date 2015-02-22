@@ -7,7 +7,7 @@ import java.util.Scanner;
 import alphaDiversity.Statistics;
 
 public class PrepareData {
-	
+
 	public static void CountFre(Statistics dataCounts, String[] content) {
 		dataCounts.rowSum = 0.0;
 		dataCounts.simpsonsIndex = 0.0;
@@ -22,7 +22,7 @@ public class PrepareData {
 		dataCounts.numOfSamples = content.length-1;
 		dataCounts.numOfSimpsonsIndices++;
 	}
-	
+
 	public static Statistics readFile(String filename) {
 		File file = new File(filename);
 		Scanner scanner; 

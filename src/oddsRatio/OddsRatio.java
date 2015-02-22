@@ -36,7 +36,7 @@ public class OddsRatio {
 		}
 		return res;
 	}
-	
+
 	public static class Generator<T> extends GenRunnable<T> {
 		T[][][] aliceCase;
 		T[][][] bobCase;
@@ -117,7 +117,7 @@ public class OddsRatio {
 			bobControl = env.inputOfBob(controlData);
 			numOfTests = caseSta.numberOftuples;
 		}
-		
+
 		T[][] res;
 
 		@Override

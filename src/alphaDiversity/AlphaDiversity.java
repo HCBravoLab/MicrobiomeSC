@@ -17,69 +17,69 @@ public class AlphaDiversity {
 			T[][][] bobCase,
 			T[][][] aliceControl,
 			T[][][] bobControl, int numOfTests) {
-		
+
 		T[][] res = gen.newTArray(numOfTests, 0);
 		FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
-			T[] caseSumOfSquares;
-			T[] controlSumOfSquares;
-	
-			T[] caseTotalSum;
-			T[] controlTotalSum;
-	
-			T[] caseNum;
-			T[] controlNum;
-			
-			T[] caseVariance;
-			T[] controlVariance;
-			T[] caseVarianceSecondTerm;
-			T[] controlVarianceSecondTerm;
-			T[] caseMeanAbundance;
-			T[] controlMeanAbundance;
-			T[] tUpper;
-			T[] tLowerFirst;
-			T[] tLowerSecond;
-			T[] tLowerSqrt;
-			T[] tStat;
-		    
-		    caseSumOfSquares = flib.add(aliceCase[0][1], bobCase[0][1]);
-		    controlSumOfSquares = flib.add(aliceControl[0][1], bobControl[0][1]);
-		    
-		    caseTotalSum = flib.add(aliceCase[0][0], bobCase[0][0]);
-		    controlTotalSum = flib.add(aliceControl[0][0], bobControl[0][0]);
-		    
-		    caseNum = flib.add(aliceCase[0][2], bobCase[0][2]);
-		    controlNum = flib.add(aliceControl[0][2], bobControl[0][2]);
-		    
-		    caseMeanAbundance = flib.div(caseTotalSum, caseNum);	
-		    caseVarianceSecondTerm = flib.div(flib.multiply(caseTotalSum, caseTotalSum), caseNum);
-	
-		    caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
-		    
-		    controlMeanAbundance = flib.div(controlTotalSum, controlNum);
-	
-		    controlVarianceSecondTerm = flib.div(flib.multiply(controlTotalSum, controlTotalSum), controlNum);
-		    controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
-		 
-		    tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
-		    tLowerFirst = flib.div(caseVariance, caseNum);
-		    tLowerSecond = flib.div(controlVariance, controlNum);
-		    tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
-		    tStat = flib.div(tUpper, tLowerSqrt);
-		    
-		    T[] caseVarianceSquared = flib.multiply(caseVariance, caseVariance);
-		    T[] controlVarianceSquared = flib.multiply(controlVariance, controlVariance);
-		    
-		    T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
-		    degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
-		    T[] degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
-		    T[] degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
-		    T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
-		    
-		    res[0] = tStat;
-		    res[1] = degreesOfFreedom;
-		    return res;
+		T[] caseSumOfSquares;
+		T[] controlSumOfSquares;
+
+		T[] caseTotalSum;
+		T[] controlTotalSum;
+
+		T[] caseNum;
+		T[] controlNum;
+
+		T[] caseVariance;
+		T[] controlVariance;
+		T[] caseVarianceSecondTerm;
+		T[] controlVarianceSecondTerm;
+		T[] caseMeanAbundance;
+		T[] controlMeanAbundance;
+		T[] tUpper;
+		T[] tLowerFirst;
+		T[] tLowerSecond;
+		T[] tLowerSqrt;
+		T[] tStat;
+
+		caseSumOfSquares = flib.add(aliceCase[0][1], bobCase[0][1]);
+		controlSumOfSquares = flib.add(aliceControl[0][1], bobControl[0][1]);
+
+		caseTotalSum = flib.add(aliceCase[0][0], bobCase[0][0]);
+		controlTotalSum = flib.add(aliceControl[0][0], bobControl[0][0]);
+
+		caseNum = flib.add(aliceCase[0][2], bobCase[0][2]);
+		controlNum = flib.add(aliceControl[0][2], bobControl[0][2]);
+
+		caseMeanAbundance = flib.div(caseTotalSum, caseNum);	
+		caseVarianceSecondTerm = flib.div(flib.multiply(caseTotalSum, caseTotalSum), caseNum);
+
+		caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
+
+		controlMeanAbundance = flib.div(controlTotalSum, controlNum);
+
+		controlVarianceSecondTerm = flib.div(flib.multiply(controlTotalSum, controlTotalSum), controlNum);
+		controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
+
+		tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
+		tLowerFirst = flib.div(caseVariance, caseNum);
+		tLowerSecond = flib.div(controlVariance, controlNum);
+		tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
+		tStat = flib.div(tUpper, tLowerSqrt);
+
+		T[] caseVarianceSquared = flib.multiply(caseVariance, caseVariance);
+		T[] controlVarianceSquared = flib.multiply(controlVariance, controlVariance);
+
+		T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
+		degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
+		T[] degreesOfFreedomBottomFirst = flib.div(caseVarianceSquared, flib.multiply(caseNum,flib.multiply(caseNum,(flib.sub(caseNum, flib.publicValue(1.0))))));
+		T[] degreesOfFreedomBottomSecond = flib.div(controlVarianceSquared, flib.multiply(controlNum,flib.multiply(controlNum,(flib.sub(controlNum, flib.publicValue(1.0))))));
+		T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
+
+		res[0] = tStat;
+		res[1] = degreesOfFreedom;
+		return res;
 	}
-	
+
 	public static class Generator<T> extends GenRunnable<T> {
 		T[][][] aliceCase;
 		T[][][] bobCase;

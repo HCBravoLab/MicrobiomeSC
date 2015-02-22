@@ -1,3 +1,7 @@
+/*Original implementation of chi-square performed by xiao wang,
+ *  slightly by justin wagner to handle microbiome count data
+ */
+
 package chiSquare;
 
 

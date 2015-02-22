@@ -29,12 +29,9 @@ public class PrepareData {
 		Statistics sta = new Statistics();
 		sta.simpsonsSumOfSquares = 0.0;
 		sta.simpsonsIndexTotalSum = 0.0;
-		//StatisticsData d = new StatisticsData(); 
-		//LinkedList<Statistics> lsta = new LinkedList<Statistics>();
 		try {
 			scanner = new Scanner(file);
 			String line = scanner.nextLine();
-			//System.out.println(line);
 			while(scanner.hasNextLine()) {
 				line = scanner.nextLine();
 				String[] counts = line.split(" ");

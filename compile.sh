@@ -1,4 +1,4 @@
-CP="bin:lib/*"
+CP="bin:lib/*:../FlexSC/bin:../FlexSC/lib*"
 
 mkdir -p bin
 find . -name "*.java"  > source.txt;

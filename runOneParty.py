@@ -5,5 +5,8 @@ f = open(sys.argv[1])
 
 line = f.readlines()
 
-
-subprocess.call(line[(int)(sys.argv[2])].split("&")[0], shell=True)
+name = ["gen", "", "eva"]
+p = (int)(sys.argv[2])
+cmd = line[p].split("$")[0]+"| tee result/"+sys.argv[1].split(".")[0]+"_"+name[p]
+print cmd
+subprocess.call(cmd, shell=True)

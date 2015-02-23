@@ -26,8 +26,8 @@ import flexsc.CompEnv;
 
 public class ChiSquare {
 	static public int Width = 9;
-	static public int FWidth = 50;
-	static public int FOffset = 11;
+	static public int FWidth = 48;
+	static public int FOffset = 7;
 
 	public static<T> T[][] compute(CompEnv<T> gen, T[][][] aliceCase,
 			T[][][] bobCase,

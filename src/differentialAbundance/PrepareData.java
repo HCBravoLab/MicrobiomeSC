@@ -36,6 +36,7 @@ public class PrepareData {
 			while(scanner.hasNextLine()) {
 				Statistics sta = new Statistics();
 				line = scanner.nextLine();
+				
 				String[] counts = line.split(" ");
 				CountFre(sta, counts);
 				lsta.add(sta);

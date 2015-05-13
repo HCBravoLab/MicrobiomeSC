@@ -4,17 +4,19 @@ package differentialAbundance;
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
+import circuits.arithmetic.FixedPointLib;
 import circuits.arithmetic.FloatLib;
 import differentialAbundance.PrepareData;
 import differentialAbundance.PrepareData.StatisticsData;
 import flexsc.CompEnv;
+
 import org.apache.commons.math3.distribution.TDistribution;
 
 
 public class DifferentialAbundance {
-	static public int Width = 9;
-	static public int FWidth = 49;
-	static public int FOffset = 8;
+	static public int Width = 32;
+	static public int FWidth = 40;
+	static public int FOffset = 20;
 
 	public static<T> T[][][] compute(CompEnv<T> gen, T[][][] aliceCase,
 			T[][][] bobCase,
@@ -22,7 +24,7 @@ public class DifferentialAbundance {
 			T[][][] bobControl, int numOfTests) {	
 
 		T[][][] res = gen.newTArray(numOfTests, 2, 0);
-		FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+		FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
 		T[] tStat;
 
 		for(int i = 0; i < numOfTests; i++) {
@@ -97,21 +99,21 @@ public class DifferentialAbundance {
 		public void prepareInput(CompEnv<T> gen) {
 			StatisticsData caseSta = PrepareData.readFile(args[0]);
 			StatisticsData controlSta = PrepareData.readFile(args[1]);
-			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+			FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
 			T[] l = flib.publicValue(0.0);
 
 			boolean[][][] caseData = new boolean[caseSta.numOfTuples][3][l.length];
 			for(int i = 0; i < caseSta.numOfTuples; i++) {
-				caseData[i][0] = Utils.fromFloat(caseSta.data[i].totalSum, FWidth, FOffset);
-				caseData[i][1] = Utils.fromFloat(caseSta.data[i].sumOfSquares, FWidth, FOffset);
-				caseData[i][2] = Utils.fromFloat(caseSta.data[i].numOfSamples, FWidth, FOffset);
+				caseData[i][0] = Utils.fromFixPoint(caseSta.data[i].totalSum, FWidth, FOffset);
+				caseData[i][1] = Utils.fromFixPoint(caseSta.data[i].sumOfSquares, FWidth, FOffset);
+				caseData[i][2] = Utils.fromFixPoint(caseSta.data[i].numOfSamples, FWidth, FOffset);
 			}
 
 			boolean[][][] controlData = new boolean[controlSta.numOfTuples][3][l.length];
 			for(int i = 0; i < controlSta.numOfTuples; i++) {
-				controlData[i][0] = Utils.fromFloat(controlSta.data[i].totalSum, FWidth, FOffset);
-				controlData[i][1] = Utils.fromFloat(controlSta.data[i].sumOfSquares, FWidth, FOffset);
-				controlData[i][2] = Utils.fromFloat(controlSta.data[i].numOfSamples, FWidth, FOffset);
+				controlData[i][0] = Utils.fromFixPoint(controlSta.data[i].totalSum, FWidth, FOffset);
+				controlData[i][1] = Utils.fromFixPoint(controlSta.data[i].sumOfSquares, FWidth, FOffset);
+				controlData[i][2] = Utils.fromFixPoint(controlSta.data[i].numOfSamples, FWidth, FOffset);
 			}
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);
@@ -128,7 +130,7 @@ public class DifferentialAbundance {
 
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+			FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
 
 			System.out.println("t-stat,Degrees Of Freedom,p-value");
 			for(int i = 0; i < numOfTests; i++){
@@ -161,21 +163,21 @@ public class DifferentialAbundance {
 		public void prepareInput(CompEnv<T> gen) {
 			StatisticsData caseSta = PrepareData.readFile(args[0]);
 			StatisticsData controlSta = PrepareData.readFile(args[1]);			
-			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+			FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
 			T[] l = flib.publicValue(0.0);
 
 			boolean[][][] caseData = new boolean[caseSta.numOfTuples][3][l.length];
 			for(int i = 0; i < caseSta.numOfTuples; i++) {								
-				caseData[i][0] = Utils.fromFloat(caseSta.data[i].totalSum, FWidth, FOffset);
-				caseData[i][1] = Utils.fromFloat(caseSta.data[i].sumOfSquares, FWidth, FOffset);
-				caseData[i][2] = Utils.fromFloat(caseSta.data[i].numOfSamples, FWidth, FOffset);
+				caseData[i][0] = Utils.fromFixPoint(caseSta.data[i].totalSum, FWidth, FOffset);
+				caseData[i][1] = Utils.fromFixPoint(caseSta.data[i].sumOfSquares, FWidth, FOffset);
+				caseData[i][2] = Utils.fromFixPoint(caseSta.data[i].numOfSamples, FWidth, FOffset);
 			}
 
 			boolean[][][] controlData = new boolean[controlSta.numOfTuples][3][l.length];
 			for(int i = 0; i < controlSta.numOfTuples; i++) {
-				controlData[i][0] = Utils.fromFloat(controlSta.data[i].totalSum, FWidth, FOffset);
-				controlData[i][1] = Utils.fromFloat(controlSta.data[i].sumOfSquares, FWidth, FOffset);
-				controlData[i][2] = Utils.fromFloat(controlSta.data[i].numOfSamples, FWidth, FOffset);
+				controlData[i][0] = Utils.fromFixPoint(controlSta.data[i].totalSum, FWidth, FOffset);
+				controlData[i][1] = Utils.fromFixPoint(controlSta.data[i].sumOfSquares, FWidth, FOffset);
+				controlData[i][2] = Utils.fromFixPoint(controlSta.data[i].numOfSamples, FWidth, FOffset);
 			}
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);
@@ -192,10 +194,10 @@ public class DifferentialAbundance {
 
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+			FixedPointLib<T> flib = new FixedPointLib<T>(gen, FWidth, FOffset);
 			for(int i = 0; i < numOfTests; i++){
-				flib.outputToAlice(res[i][0]);
-				flib.outputToAlice(res[i][1]);
+				gen.outputToAlice(res[i][0]);
+				gen.outputToAlice(res[i][1]);
 			}
 		}
 	}

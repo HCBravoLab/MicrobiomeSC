@@ -91,9 +91,8 @@ public class ChiSquare {
 			Statistics[] controlSta = controlInput.data;
 			boolean[][][] caseData = new boolean[caseSta.length][2][Width];
 
-			int caseLength = ByteBuffer.wrap(Server.readBytes(gen.is, 4)).getInt();
-			int controlLength = ByteBuffer.wrap(Server.readBytes(gen.is, 4)).getInt();
-
+			int caseLength = gen.channel.readInt();
+			int controlLength = gen.channel.readInt();
 			//extraFactor = n/(r*s)
 
 			extraFactor = 2*(caseLength + controlLength + caseInput.numberOftuples+ controlInput.numberOftuples);
@@ -168,10 +167,11 @@ public class ChiSquare {
 			Statistics[] controlSta = controlInput.data;
 			boolean[][][] caseData = new boolean[caseSta.length][2][Width];
 
-			gen.os.write(ByteBuffer.allocate(4).putInt(caseInput.numberOftuples).array());
-			gen.os.write(ByteBuffer.allocate(4).putInt(controlInput.numberOftuples).array());
-			gen.os.flush();
-
+			
+			gen.channel.writeInt(caseInput.numberOftuples);
+			gen.channel.writeInt(controlInput.numberOftuples);
+			gen.channel.flush();
+			
 			for(int i = 0; i < caseSta.length; ++i) {
 				caseData[i][0] = Utils.fromInt(caseSta[i].numOfPresent, Width);
 				caseData[i][1] = Utils.fromInt(caseSta[i].totalNum - caseSta[i].numOfPresent, Width);

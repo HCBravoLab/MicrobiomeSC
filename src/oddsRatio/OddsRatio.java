@@ -5,14 +5,15 @@ import oddsRatio.PrepareData.StatisticsData;
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
+import circuits.arithmetic.FixedPointLib;
 import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
 
 public class OddsRatio {
-	static public int Width = 9;
-	static public int FWidth = 49;
-	static public int FOffset = 8;
+	static public int Width = 32;
+	static public int FWidth = 40;
+	static public int FOffset = 20;
 
 	public static<T> T[][] compute(CompEnv<T> env, T[][][] aliceCase,
 			T[][][] bobCase,
@@ -20,18 +21,24 @@ public class OddsRatio {
 			T[][][] bobControl, int numOfTests, boolean precise) {
 		T[][] res = env.newTArray(numOfTests, 0);
 		IntegerLib<T> lib = new IntegerLib<T>(env);
-		FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
+		FixedPointLib<T> flib = new FixedPointLib<T>(env, FWidth, FOffset);
 		for(int i = 0; i < numOfTests; ++i) {
 			T[] a = lib.add(aliceCase[i][0], bobCase[i][0]);
 			T[] b = lib.add(aliceCase[i][1], bobCase[i][1]);
 			T[] c = lib.add(aliceControl[i][0], bobControl[i][0]);
 			T[] d = lib.add(aliceControl[i][1], bobControl[i][1]);
 
+
+			T[] fa = lib.toSecureFixPoint(a, flib);
+			T[] fb = lib.toSecureFixPoint(b, flib);
+			T[] fc = lib.toSecureFixPoint(c, flib);
+			T[] fd = lib.toSecureFixPoint(d, flib);
+			/*
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
 			T[] fc = lib.toSecureFloat(c, flib);
 			T[] fd = lib.toSecureFloat(d, flib);
-
+*/
 			res[i] = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
 		}
 		return res;
@@ -59,7 +66,7 @@ public class OddsRatio {
 				caseData[i][1] = Utils.fromInt(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent, Width);
 			}
 
-			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][Width];
+			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][l.length];
 			for(int i = 0; i < controlSta.numberOftuples; ++i) {
 				controlData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
 				controlData[i][1] = Utils.fromInt(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent, Width);
@@ -79,7 +86,7 @@ public class OddsRatio {
 
 		@Override
 		public void prepareOutput(CompEnv<T> env) {
-			FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
+			FixedPointLib<T> flib = new FixedPointLib<T>(env, FWidth, FOffset);
 			System.out.println("Odds Ratio");
 			for(int i = 0; i < res.length; ++i)
 				System.out.println(flib.outputToAlice(res[i]));
@@ -97,7 +104,7 @@ public class OddsRatio {
 		public void prepareInput(CompEnv<T> env) throws Exception {
 			StatisticsData caseSta = PrepareData.readFile(args[0]);
 			StatisticsData controlSta = PrepareData.readFile(args[1]);
-			FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
+			FixedPointLib<T> flib = new FixedPointLib<T>(env, FWidth, FOffset);
 			T[] l = flib.publicValue(0.0);
 
 			boolean[][][] caseData = new boolean[caseSta.numberOftuples][2][l.length];
@@ -106,7 +113,7 @@ public class OddsRatio {
 				caseData[i][1] = Utils.fromInt(caseSta.data[i].totalNum - caseSta.data[i].numOfPresent, Width);
 			}
 
-			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][Width];
+			boolean[][][] controlData = new boolean[controlSta.numberOftuples][2][l.length];
 			for(int i = 0; i < controlSta.numberOftuples; ++i) {
 				controlData[i][0] = Utils.fromInt(controlSta.data[i].numOfPresent, Width);
 				controlData[i][1] = Utils.fromInt(controlSta.data[i].totalNum - controlSta.data[i].numOfPresent, Width);

@@ -12,8 +12,8 @@ import flexsc.CompEnv;
 
 public class OddsRatio {
 	static public int Width = 32;
-	static public int FWidth = 40;
-	static public int FOffset = 20;
+	static public int FWidth = 54;
+	static public int FOffset = 11;
 
 	public static<T> T[][] compute(CompEnv<T> env, T[][][] aliceCase,
 			T[][][] bobCase,
@@ -21,7 +21,7 @@ public class OddsRatio {
 			T[][][] bobControl, int numOfTests, boolean precise) {
 		T[][] res = env.newTArray(numOfTests, 0);
 		IntegerLib<T> lib = new IntegerLib<T>(env);
-		FixedPointLib<T> flib = new FixedPointLib<T>(env, FWidth, FOffset);
+		FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
 		for(int i = 0; i < numOfTests; ++i) {
 			T[] a = lib.add(aliceCase[i][0], bobCase[i][0]);
 			T[] b = lib.add(aliceCase[i][1], bobCase[i][1]);
@@ -29,10 +29,10 @@ public class OddsRatio {
 			T[] d = lib.add(aliceControl[i][1], bobControl[i][1]);
 
 
-			T[] fa = lib.toSecureFixPoint(a, flib);
-			T[] fb = lib.toSecureFixPoint(b, flib);
-			T[] fc = lib.toSecureFixPoint(c, flib);
-			T[] fd = lib.toSecureFixPoint(d, flib);
+			T[] fa = lib.toSecureFloat(a, flib);
+			T[] fb = lib.toSecureFloat(b, flib);
+			T[] fc = lib.toSecureFloat(c, flib);
+			T[] fd = lib.toSecureFloat(d, flib);
 			/*
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
@@ -86,7 +86,7 @@ public class OddsRatio {
 
 		@Override
 		public void prepareOutput(CompEnv<T> env) {
-			FixedPointLib<T> flib = new FixedPointLib<T>(env, FWidth, FOffset);
+			FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
 			System.out.println("Odds Ratio");
 			for(int i = 0; i < res.length; ++i)
 				System.out.println(flib.outputToAlice(res[i]));
@@ -104,7 +104,7 @@ public class OddsRatio {
 		public void prepareInput(CompEnv<T> env) throws Exception {
 			StatisticsData caseSta = PrepareData.readFile(args[0]);
 			StatisticsData controlSta = PrepareData.readFile(args[1]);
-			FixedPointLib<T> flib = new FixedPointLib<T>(env, FWidth, FOffset);
+			FloatLib<T> flib = new FloatLib<T>(env, FWidth, FOffset);
 			T[] l = flib.publicValue(0.0);
 
 			boolean[][][] caseData = new boolean[caseSta.numberOftuples][2][l.length];

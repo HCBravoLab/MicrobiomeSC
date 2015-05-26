@@ -10,8 +10,8 @@ import org.apache.commons.math3.distribution.*;
 
 public class AlphaDiversity {
 	static public int Width = 9;
-	static public int FWidth = 49;
-	static public int FOffset = 8;
+	static public int FWidth = 54;
+	static public int FOffset = 11;
 
 	public static<T> T[][] compute(CompEnv<T> gen, T[][][] aliceCase,
 			T[][][] bobCase,

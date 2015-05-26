@@ -229,11 +229,9 @@ public class OddsRatio {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
-			System.out.println("chi,p-value");
+			System.out.println("odds ratio");
 			for(int i = in.length-1; i >= 0; i--){
 				System.out.println(Utils.toFloat(gen.outputToAlice(in[i]), width, offset) + " ");
-				//System.out.println(Utils.toInt(gen.outputToAlice(in[i])) + " ");
 			}
 		}
 	}

@@ -25,7 +25,7 @@ import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
 
 public class ChiSquare {
-	static public int Width = 9;
+	static public int Width = 32;
 	static public int FWidth = 54;
 	static public int FOffset = 11;
 
@@ -44,19 +44,26 @@ public class ChiSquare {
 			T[] b = lib.add(aliceCase[i][1], bobCase[i][1]);
 			T[] c = lib.add(aliceControl[i][0], bobControl[i][0]);
 			T[] d = lib.add(aliceControl[i][1], bobControl[i][1]);
-			T[] g = lib.add(a, c);
-			T[] k = lib.add(b, d);
+			//T[] g = lib.add(a, c);
+			//T[] k = lib.add(b, d);
 
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
 			T[] fc = lib.toSecureFloat(c, flib);
 			T[] fd = lib.toSecureFloat(d, flib);
-			T[] fg = lib.toSecureFloat(g, flib);
-			T[] fk = lib.toSecureFloat(k, flib);
+			//T[] fg = lib.toSecureFloat(g, flib);
+			//T[] fk = lib.toSecureFloat(k, flib);
 
-			T[] tmp = flib.sub(flib.multiply(fa, fd), flib.multiply(fb, fc));
-			tmp = flib.multiply(tmp, tmp);
-			res[i] = flib.div(tmp, flib.multiply(fg, fk));
+			//T[] tmp = flib.sub(flib.multiply(fa, fd), flib.multiply(fb, fc));
+			//tmp = flib.multiply(tmp, tmp);
+			//res[i] = flib.div(tmp, flib.multiply(fg, fk));
+
+			T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
+			T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));
+			upperSecond = flib.multiply(upperSecond, upperSecond);
+			T[] upper = flib.multiply(upperFirst, upperSecond);
+			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
+			res[i] = flib.div(upper, lower);
 		}
 		return res;
 
@@ -93,11 +100,6 @@ public class ChiSquare {
 
 			int caseLength = gen.channel.readInt();
 			int controlLength = gen.channel.readInt();
-			//extraFactor = n/(r*s)
-
-			extraFactor = 2*(caseLength + controlLength + caseInput.numberOftuples+ controlInput.numberOftuples);
-			extraFactor /= 2*(caseLength + caseInput.numberOftuples);
-			extraFactor /= 2*(controlLength + controlInput.numberOftuples);
 
 			for(int i = 0; i < caseSta.length; ++i) {
 				caseData[i][0] = Utils.fromInt(caseSta[i].numOfPresent, Width);
@@ -128,7 +130,7 @@ public class ChiSquare {
 			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
 			System.out.println("chi,p-value");
 			for(int i = 0; i < numOfTests; ++i){
-				double chi = flib.outputToAlice(res[i]) * extraFactor;
+				double chi = flib.outputToAlice(res[i]);// * extraFactor;
 				if(chi == 0.0){
 					System.out.println("NA,NA");
 					continue;

@@ -33,12 +33,6 @@ public class OddsRatio {
 			T[] fb = lib.toSecureFloat(b, flib);
 			T[] fc = lib.toSecureFloat(c, flib);
 			T[] fd = lib.toSecureFloat(d, flib);
-			/*
-			T[] fa = lib.toSecureFloat(a, flib);
-			T[] fb = lib.toSecureFloat(b, flib);
-			T[] fc = lib.toSecureFloat(c, flib);
-			T[] fd = lib.toSecureFloat(d, flib);
-*/
 			res[i] = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
 		}
 		return res;

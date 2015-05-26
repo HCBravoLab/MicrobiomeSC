@@ -9,7 +9,7 @@ import flexsc.CompEnv;
 import org.apache.commons.math3.distribution.*;
 
 public class AlphaDiversity {
-	static public int Width = 9;
+	static public int Width = 32;
 	static public int FWidth = 54;
 	static public int FOffset = 11;
 
@@ -94,16 +94,16 @@ public class AlphaDiversity {
 			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
 			T[] l = flib.publicValue(0.0);
 			boolean[][][] caseData = new boolean[1][4][l.length];
-			caseData[0][0] = Utils.fromFixPoint(caseSta.simpsonsIndexTotalSum, FWidth, FOffset);
-			caseData[0][1] = Utils.fromFixPoint(caseSta.simpsonsSumOfSquares, FWidth, FOffset);
-			caseData[0][2] = Utils.fromFixPoint(caseSta.numOfSimpsonsIndices, FWidth, FOffset);
-			caseData[0][3] = Utils.fromFixPoint(caseSta.numOfSamples, FWidth, FOffset);
+			caseData[0][0] = Utils.fromFloat(caseSta.simpsonsIndexTotalSum, FWidth, FOffset);
+			caseData[0][1] = Utils.fromFloat(caseSta.simpsonsSumOfSquares, FWidth, FOffset);
+			caseData[0][2] = Utils.fromFloat(caseSta.numOfSimpsonsIndices, FWidth, FOffset);
+			caseData[0][3] = Utils.fromFloat(caseSta.numOfSamples, FWidth, FOffset);
 
 			boolean[][][] controlData = new boolean[1][4][l.length];
-			controlData[0][0] = Utils.fromFixPoint(controlSta.simpsonsIndexTotalSum, FWidth, FOffset);
-			controlData[0][1] = Utils.fromFixPoint(controlSta.simpsonsSumOfSquares, FWidth, FOffset);
-			controlData[0][2] = Utils.fromFixPoint(controlSta.numOfSimpsonsIndices, FWidth, FOffset);
-			controlData[0][3] = Utils.fromFixPoint(controlSta.numOfSamples, FWidth, FOffset);
+			controlData[0][0] = Utils.fromFloat(controlSta.simpsonsIndexTotalSum, FWidth, FOffset);
+			controlData[0][1] = Utils.fromFloat(controlSta.simpsonsSumOfSquares, FWidth, FOffset);
+			controlData[0][2] = Utils.fromFloat(controlSta.numOfSimpsonsIndices, FWidth, FOffset);
+			controlData[0][3] = Utils.fromFloat(controlSta.numOfSamples, FWidth, FOffset);
 
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);
@@ -147,16 +147,16 @@ public class AlphaDiversity {
 			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
 			T[] l = flib.publicValue(0.0);
 			boolean[][][] caseData = new boolean[1][4][l.length];
-			caseData[0][0] = Utils.fromFixPoint(caseSta.simpsonsIndexTotalSum, FWidth, FOffset);
-			caseData[0][1] = Utils.fromFixPoint(caseSta.simpsonsSumOfSquares, FWidth, FOffset);
-			caseData[0][2] = Utils.fromFixPoint(caseSta.numOfSimpsonsIndices, FWidth, FOffset);
-			caseData[0][3] = Utils.fromFixPoint(caseSta.numOfSamples, FWidth, FOffset);
+			caseData[0][0] = Utils.fromFloat(caseSta.simpsonsIndexTotalSum, FWidth, FOffset);
+			caseData[0][1] = Utils.fromFloat(caseSta.simpsonsSumOfSquares, FWidth, FOffset);
+			caseData[0][2] = Utils.fromFloat(caseSta.numOfSimpsonsIndices, FWidth, FOffset);
+			caseData[0][3] = Utils.fromFloat(caseSta.numOfSamples, FWidth, FOffset);
 
 			boolean[][][] controlData = new boolean[1][4][l.length];
-			controlData[0][0] = Utils.fromFixPoint(controlSta.simpsonsIndexTotalSum, FWidth, FOffset);
-			controlData[0][1] = Utils.fromFixPoint(controlSta.simpsonsSumOfSquares, FWidth, FOffset);
-			controlData[0][2] = Utils.fromFixPoint(controlSta.numOfSimpsonsIndices, FWidth, FOffset);
-			controlData[0][3] = Utils.fromFixPoint(controlSta.numOfSamples, FWidth, FOffset);
+			controlData[0][0] = Utils.fromFloat(controlSta.simpsonsIndexTotalSum, FWidth, FOffset);
+			controlData[0][1] = Utils.fromFloat(controlSta.simpsonsSumOfSquares, FWidth, FOffset);
+			controlData[0][2] = Utils.fromFloat(controlSta.numOfSimpsonsIndices, FWidth, FOffset);
+			controlData[0][3] = Utils.fromFloat(controlSta.numOfSamples, FWidth, FOffset);
 
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);

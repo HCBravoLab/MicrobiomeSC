@@ -7,7 +7,6 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
 import util.EvaRunnable;
 import util.GenRunnable;
@@ -110,7 +109,9 @@ public class OddsRatio {
 		T[][][] inputAliceCase;
 		T[][][] inputAliceControl;
 		T[][][] inputBobControl;
-		T[][] inputCounters;
+		T[][] inputBobCounters;
+		T[][] inputAliceCounters;
+
 		T[][] in;
 		
 		T[] aliceCaseNum;
@@ -130,7 +131,8 @@ public class OddsRatio {
 			if(!cmd.hasOption("s") || !cmd.hasOption("t")) {
 			  throw new Exception("wrong input");
 			}
-			
+			IntegerLib<T> ilib = new IntegerLib<T>(gen);
+			T[] l = ilib.publicValue(0.0);
 			int[] caseInput = PrepareData.readFile(cmd.getOptionValue("s"));
 			int[] controlInput = PrepareData.readFile(cmd.getOptionValue("t"));
 			int numCounters = caseInput[1];
@@ -142,6 +144,7 @@ public class OddsRatio {
 			bobControlNum = gen.inputOfBob(new boolean[32]);
 			System.out.println("Alice case num " + aliceCaseNumInt);
 			System.out.println("Alice control num " + aliceControlNumInt);
+			System.out.println("Num counters gen " + numCounters);
 
 			int EvaCaseNum = gen.channel.readInt();
 			gen.channel.flush();
@@ -152,18 +155,27 @@ public class OddsRatio {
 			gen.channel.flush();
 			int GenControlNum = controlInput.length-2;
 			gen.channel.writeInt(GenControlNum);
+			gen.channel.flush();
 
-			inputCounters = gen.newTArray(numCounters, 0);
-			for(int i = 0; i < numCounters; i++){
-				inputCounters[i] = gen.inputOfAlice(Utils.fromInt(i+1, 32));
+			System.out.println("Eva Case Num gen" + EvaCaseNum);
+			System.out.println("Gen Case Num gen" + GenCaseNum);
+			System.out.println("Eva Control Num gen" + EvaControlNum);
+			System.out.println("Gen Control Num gen" + GenControlNum);
+
+			inputBobCounters = gen.newTArray(numCounters, 0);
+			for (int j = 0; j < numCounters; j++) {
+				inputBobCounters[j] = gen.inputOfBob(new boolean[32]);
 			}
+			gen.flush();
+			System.out.println("Done with inputAliceCounters");
+
 			Comparator<Integer[]> comparator = new Comparator<Integer[]>(){
 				@Override
 				public int compare(Integer[] a, Integer[] b){
 					return Integer.compare(a[0], b[0]);
 				}
 			};
-			gen.flush();
+			
 			System.out.println("Done with inputCounters gen");
 			Integer[][] caseIn = new Integer[GenCaseNum+numCounters][2];
 			for(int i = 0; i < numCounters; i++){
@@ -178,18 +190,20 @@ public class OddsRatio {
 			Arrays.sort(caseIn, comparator);
 			inputAliceCase = gen.newTArray(2, GenCaseNum+numCounters, 0);			
 			for(int i = 0; i < GenCaseNum+numCounters; i++){
-				inputAliceCase[0][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][0], 32));
-				inputAliceCase[1][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][1], 32));
+				inputAliceCase[0][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][0].intValue(), 32));
 			}
-			System.out.println();
+			for(int i = 0; i < GenCaseNum+numCounters; i++){
+				inputAliceCase[1][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][1].intValue(), 32));
+			}
 			gen.flush();
 			System.out.println("Done with inputAliceCase gen");
 
 			inputBobCase = gen.newTArray(2, EvaCaseNum+numCounters, 0);
-			for (int i = 0; i < 2; i++) {
-				for (int j = 0; j < EvaCaseNum+numCounters; j++) {
-					inputBobCase[i][j] = gen.inputOfBob(new boolean[32]);
-				}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[0][j] = gen.inputOfBob(new boolean[32]);
+			}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[1][j] = gen.inputOfBob(new boolean[32]);
 			}
 			gen.flush();
 			System.out.println("Done with inputBobCase gen");
@@ -206,32 +220,38 @@ public class OddsRatio {
 
 			inputAliceControl = gen.newTArray(2,GenControlNum+numCounters, 0);
 			for(int i = 0; i < GenControlNum+numCounters; i++){
-				inputAliceControl[0][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][0], 32));
-				inputAliceControl[1][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][1], 32));
+				inputAliceControl[0][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][0].intValue(), 32));
 			}
-			System.out.println("Done with inputAliceControl gen");
+			for(int i = 0; i < GenControlNum+numCounters; i++){
+				inputAliceControl[1][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][1].intValue(), 32));
+			}
 			gen.flush();
+			System.out.println("Done with inputAliceControl gen");
 
 			inputBobControl = gen.newTArray(2, EvaControlNum+numCounters, 0);
-			for (int i = 0; i < 2; i++) {
-				for (int j = 0; j < EvaControlNum+numCounters; j++) {
-					inputBobControl[i][j] = gen.inputOfBob(new boolean[32]);
-				}
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[0][j] = gen.inputOfBob(new boolean[32]);
 			}
-			System.out.println("Done with inputBobControl gen");
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[1][j] = gen.inputOfBob(new boolean[32]);
+			}
 			gen.flush();
+			System.out.println("Done with inputBobControl gen");
 		}
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			in = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl, 
-					inputCounters, aliceCaseNum, bobCaseNum, aliceControlNum, bobControlNum);
+					inputBobCounters, aliceCaseNum, bobCaseNum, aliceControlNum, bobControlNum);
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			System.out.println("odds ratio");
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+
 			for(int i = in.length-1; i >= 0; i--){
-				System.out.println(Utils.toFloat(gen.outputToAlice(in[i]), width, offset) + " ");
+				double odds_ratio = flib.outputToAlice(in[i]);
+				System.out.println(odds_ratio);
 			}
 		}
 	}
@@ -239,7 +259,9 @@ public class OddsRatio {
 	public static class Evaluator<T> extends EvaRunnable<T> {
 		T[][][] inputBobCase;
 		T[][][] inputAliceCase;
-		T[][] inputCounters;
+		T[][] inputAliceCounters;
+		T[][] inputBobCounters;
+
 		T[][][] inputAliceControl;
 		T[][][] inputBobControl;
 		T[] scResult;
@@ -257,6 +279,8 @@ public class OddsRatio {
 			CommandLineParser parser = new BasicParser();
 			CommandLine cmd = parser.parse(options, args);
 
+			IntegerLib<T> ilib = new IntegerLib<T>(gen);
+			T[] l = ilib.publicValue(0.0);
 			if(!cmd.hasOption("s") || !cmd.hasOption("t")) {
 			  throw new Exception("wrong input");
 			}
@@ -267,13 +291,15 @@ public class OddsRatio {
 			int bobCaseNumInt = caseInput[0];
 			int bobControlNumInt = controlInput[0];
 
-			System.out.println("Bob case num " + bobCaseNumInt);
-			System.out.println("Bob control num " + bobControlNumInt);
-
 			aliceCaseNum = gen.inputOfAlice(new boolean[32]);
 			bobCaseNum = gen.inputOfBob(Utils.fromInt(bobCaseNumInt, 32));
 			aliceControlNum = gen.inputOfAlice(new boolean[32]);
 			bobControlNum = gen.inputOfBob(Utils.fromInt(bobControlNumInt, 32));
+
+			System.out.println("Bob case num " + bobCaseNumInt);
+			System.out.println("Bob control num " + bobControlNumInt);
+			System.out.println("Num counters eva " + numCounters);
+
 
 			int EvaCaseNum = caseInput.length-2;
 			gen.channel.writeInt(EvaCaseNum);
@@ -286,23 +312,31 @@ public class OddsRatio {
 			int GenControlNum = gen.channel.readInt();
 			gen.channel.flush();
 
-			inputCounters = gen.newTArray(numCounters, 0);
-			for (int j = 0; j < numCounters; j++) {
-					inputCounters[j] = gen.inputOfAlice(new boolean[32]);
+			System.out.println("Eva Case Num eva" + EvaCaseNum);
+			System.out.println("Gen Case Num eva" + GenCaseNum);
+			System.out.println("Eva Control Num eva" + EvaControlNum);
+			System.out.println("Gen Control Num eva" + GenControlNum);
+			
+			inputBobCounters = gen.newTArray(numCounters, 0);
+			for(int i = 0; i < numCounters; i++){
+				inputBobCounters[i] = gen.inputOfBob(Utils.fromInt(i+1, 32));
 			}
 			gen.flush();
 			System.out.println("Done with inputCounters eva");
+			
 			Comparator<Integer[]> comparator = new Comparator<Integer[]>(){
 				@Override
 				public int compare(Integer[] a, Integer[] b){
 					return Integer.compare(a[0], b[0]);
 				}
 			};
+			
 			inputAliceCase = gen.newTArray(2, GenCaseNum+numCounters, 0);
-			for (int i = 0; i < 2; ++i) {
-				for (int j = 0; j < GenCaseNum+numCounters; j++) {
-					inputAliceCase[i][j] = gen.inputOfAlice(new boolean[32]);
-				}
+			for (int j = 0; j < GenCaseNum+numCounters; j++) {
+				inputAliceCase[0][j] = gen.inputOfAlice(new boolean[32]);
+			}
+			for (int j = 0; j < GenCaseNum+numCounters; j++) {
+				inputAliceCase[1][j] = gen.inputOfAlice(new boolean[32]);
 			}
 
 			gen.flush();
@@ -318,25 +352,28 @@ public class OddsRatio {
 				caseIn[i+numCounters][1] = 1;
 			}
 			Arrays.sort(caseIn, comparator);
+			System.out.println("Done with sorting bob case");
 
 			inputBobCase = gen.newTArray(2, EvaCaseNum+numCounters, 0);			
 			for(int i = 0; i < EvaCaseNum+numCounters; i++){
-				inputBobCase[0][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][0], 32));
+				inputBobCase[0][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][0].intValue(), 32));
 			}
 			for(int i = 0; i < EvaCaseNum+numCounters; i++){
-				inputBobCase[1][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][1], 32));
+				inputBobCase[1][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][1].intValue(), 32));
 			}
-			System.out.println();
 			gen.flush();
+			System.out.println("Done with inputBobCase eva");
 
 			inputAliceControl = gen.newTArray(2, GenControlNum+numCounters, 0);
-			for (int i = 0; i < 2; ++i) {
-				for (int j = 0; j < GenControlNum+numCounters; j++) {
-					inputAliceControl[i][j] = gen.inputOfAlice(new boolean[32]);
-				}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[0][j] = gen.inputOfAlice(new boolean[32]);
+			}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[1][j] = gen.inputOfAlice(new boolean[32]);
 			}
 			gen.flush();
 			System.out.println("Done with inputAliceControl eva");
+			
 			Integer[][] controlIn = new Integer[EvaControlNum+numCounters][2];
 			for(int i = 0; i < numCounters; i++){
 				controlIn[i][0] = i+1;
@@ -350,26 +387,27 @@ public class OddsRatio {
 
 			inputBobControl = gen.newTArray(2,EvaControlNum+numCounters, 0);
 			for(int i = 0; i < EvaControlNum+numCounters; i++){
-				inputBobControl[0][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][0], 32));
+				inputBobControl[0][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][0].intValue(), 32));
 			}
 			for(int i = 0; i < EvaControlNum+numCounters; i++){
-				inputBobControl[1][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][1], 32));
+				inputBobControl[1][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][1].intValue(), 32));
 			}
-
 			gen.flush();
 			System.out.println("Done with inputBobControl eva");
+			
 		}
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
-			in = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl, inputCounters,
+			in = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl, inputBobCounters,
 					aliceCaseNum, bobCaseNum, aliceControlNum, bobControlNum);
 		}
 		
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			for(int j =0; j<in.length; j++){
-				gen.outputToAlice(in[j]);
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			for(int j =in.length-1; j>=0; j--){
+				flib.outputToAlice(in[j]);
 			}
 		}
 				

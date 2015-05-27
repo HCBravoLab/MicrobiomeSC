@@ -22,7 +22,7 @@ public class DifferentialAbundance {
 	static int offset = 11;
 	static public<T> T[][][] compute(CompEnv<T> gen, T[][] inputCounters, T[][][] inputAliceCase, 
 			T[][][] inputBobCase, T[][][] inputAliceControl, T[][][] inputBobControl,
-			T[] aliceCaseNum, T[] bobCaseNum, T[] aliceControlNum, T[] bobControlNum){//, T[][][] inputAliceControl, T[][][] inputBobControl){
+			T[] aliceCaseNum, T[] bobCaseNum, T[] aliceControlNum, T[] bobControlNum){
 
 		BitonicSortLib<T> lib = new BitonicSortLib<T>(gen);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen);
@@ -121,15 +121,15 @@ public class DifferentialAbundance {
 		T[][][] res = gen.newTArray(inputCounters.length, 2, 0);
 		
 		T[] tStat;
+		T[] caseNum = flib.add(ilib.toSecureFloat(aliceCaseNum, flib), ilib.toSecureFloat(bobCaseNum, flib));
+		T[] controlNum = flib.add(ilib.toSecureFloat(aliceControlNum, flib), ilib.toSecureFloat(bobControlNum, flib));
+
 		for(int i = 0; i < inputCounters.length; i++){	
 			T[] caseSumOfSquares;
 			T[] controlSumOfSquares;
 
 			T[] caseTotalSum;
 			T[] controlTotalSum;
-
-			T[] caseNum;
-			T[] controlNum;
 
 			T[] caseVariance;
 			T[] controlVariance;
@@ -147,9 +147,6 @@ public class DifferentialAbundance {
 
 			caseTotalSum = flib.add(inputAliceCase[1][i], inputBobCase[1][i]);
 			controlTotalSum = flib.add(inputAliceControl[1][i], inputBobControl[1][i]);
-
-			caseNum = flib.add(ilib.toSecureFloat(aliceCaseNum, flib), ilib.toSecureFloat(bobCaseNum, flib));
-			controlNum = flib.add(ilib.toSecureFloat(aliceControlNum, flib), ilib.toSecureFloat(bobControlNum, flib));
 
 			caseMeanAbundance = flib.div(caseTotalSum, caseNum);
 			caseVarianceSecondTerm = flib.div(flib.multiply(flib.add(zero, caseTotalSum), flib.add(zero,caseTotalSum)), caseNum);
@@ -239,12 +236,13 @@ public class DifferentialAbundance {
 			gen.channel.flush();
 			int GenControlNum = controlInput[0].length-2;
 			gen.channel.writeInt(GenControlNum);
+			gen.channel.flush();
 			
 			System.out.println(numCounters);
 
 			inputCounters = gen.newTArray(numCounters, 0);
 			for(int i = 0; i < numCounters; i++){
-				inputCounters[i] = gen.inputOfAlice(Utils.fromFloat(i+1, width, offset));
+				inputCounters[i] = gen.inputOfBob(Utils.fromFloat(i+1, width, offset));
 			}
 			gen.flush();
 			System.out.println("Done with inputCounters gen");
@@ -276,10 +274,14 @@ public class DifferentialAbundance {
 			System.out.println("Done with inputAliceCase gen");
 
 			inputBobCase = gen.newTArray(3, EvaCaseNum+numCounters, 0);
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < EvaCaseNum+numCounters; j++) {
-					inputBobCase[i][j] = gen.inputOfBob(new boolean[l.length]);
-				}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[0][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[1][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[2][j] = gen.inputOfBob(new boolean[l.length]);
 			}
 			gen.flush();
 			System.out.println("Done with inputBobCase gen");
@@ -307,18 +309,19 @@ public class DifferentialAbundance {
 			for(int i = 0; i < GenControlNum+numCounters; i++){
 				inputAliceControl[2][i] = gen.inputOfAlice(Utils.fromFloat(controlIn[i][2].doubleValue(), width, offset));
 			}
-
-
 			gen.flush();
-			
 			System.out.println("Done with inputAliceControl gen");
 			gen.flush();
 
 			inputBobControl = gen.newTArray(3, EvaControlNum+numCounters, 0);
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < EvaControlNum+numCounters; j++) {
-					inputBobControl[i][j] = gen.inputOfBob(new boolean[l.length]);
-				}
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[0][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[1][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[2][j] = gen.inputOfBob(new boolean[l.length]);
 			}
 			System.out.println("Done with inputBobControl gen");
 			gen.flush();
@@ -331,9 +334,11 @@ public class DifferentialAbundance {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+
 			for(int j = in.length-1; j >= 0 ; j--){
-					double tStat = Utils.toFloat(gen.outputToAlice(in[j][0]), width, offset);
-					double df = Utils.toFloat(gen.outputToAlice(in[j][1]), width, offset);
+					double tStat = flib.outputToAlice(in[j][0]);
+					double df = flib.outputToAlice(in[j][1]);
 					if (tStat == 0.0){
 						System.out.println("NA,NA,NA");
 						continue;
@@ -410,7 +415,7 @@ public class DifferentialAbundance {
 			gen.flush();
 			inputCounters = gen.newTArray(numCounters, 0);
 			for (int j = 0; j < numCounters; j++) {
-				inputCounters[j] = gen.inputOfAlice(new boolean[l.length]);
+				inputCounters[j] = gen.inputOfBob(new boolean[l.length]);
 			}
 
 			gen.flush();
@@ -458,11 +463,16 @@ public class DifferentialAbundance {
 			gen.flush();
 
 			inputAliceControl = gen.newTArray(3, GenControlNum+numCounters, 0);
-			for (int i = 0; i < 3; ++i) {
-				for (int j = 0; j < GenControlNum+numCounters; j++) {
-					inputAliceControl[i][j] = gen.inputOfAlice(new boolean[l.length]);
-				}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[0][j] = gen.inputOfAlice(new boolean[l.length]);
 			}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[1][j] = gen.inputOfAlice(new boolean[l.length]);
+			}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[2][j] = gen.inputOfAlice(new boolean[l.length]);
+			}
+			
 			gen.flush();
 			System.out.println("Done with inputAliceControl eva");
 
@@ -504,9 +514,10 @@ public class DifferentialAbundance {
 		
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			for(int j =0; j<in.length; j++){
-				for(int i = 0; i < in[0].length; i++)
-					gen.outputToAlice(in[j][i]);
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			for(int j =in.length-1; j>= 0; j--){
+				flib.outputToAlice(in[j][0]);
+				flib.outputToAlice(in[j][1]);
 			}
 		}
 				

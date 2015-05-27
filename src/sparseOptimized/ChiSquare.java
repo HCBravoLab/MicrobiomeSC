@@ -105,7 +105,9 @@ public class ChiSquare {
 			upperSecond = flib.multiply(upperSecond, upperSecond);
 			T[] upper = flib.multiply(upperFirst, upperSecond);
 			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
+			
 			res[i] = flib.div(upper, lower);
+			//res[i] = fa;
 		}
 		return res;
 	}
@@ -144,10 +146,10 @@ public class ChiSquare {
 			int numCounters = caseInput[1];
 			int aliceCaseNumInt = caseInput[0];
 			int aliceControlNumInt = controlInput[0];
-			aliceCaseNum = gen.inputOfAlice(Utils.fromInt(aliceCaseNumInt, l.length));
-			bobCaseNum = gen.inputOfBob(new boolean[l.length]);
-			aliceControlNum = gen.inputOfAlice(Utils.fromInt(aliceControlNumInt, l.length));
-			bobControlNum = gen.inputOfBob(new boolean[l.length]);
+			aliceCaseNum = gen.inputOfAlice(Utils.fromInt(aliceCaseNumInt, 32));
+			bobCaseNum = gen.inputOfBob(new boolean[32]);
+			aliceControlNum = gen.inputOfAlice(Utils.fromInt(aliceControlNumInt, 32));
+			bobControlNum = gen.inputOfBob(new boolean[32]);
 			System.out.println("Alice case num " + aliceCaseNumInt);
 			System.out.println("Alice control num " + aliceControlNumInt);
 			System.out.println("Num counters gen " + numCounters);
@@ -161,24 +163,20 @@ public class ChiSquare {
 			gen.channel.flush();
 			int GenControlNum = controlInput.length-2;
 			gen.channel.writeInt(GenControlNum);
-			
+			gen.channel.flush();
+
 			System.out.println("Eva Case Num gen" + EvaCaseNum);
 			System.out.println("Gen Case Num gen" + GenCaseNum);
 			System.out.println("Eva Control Num gen" + EvaControlNum);
 			System.out.println("Gen Control Num gen" + GenControlNum);
-			
-			inputAliceCounters = gen.newTArray(numCounters, 0);
-			for (int j = 0; j < numCounters; j++) {
-				inputAliceCounters[j] = gen.inputOfAlice(new boolean[l.length]);
-			}
-			gen.flush();
 
 			inputBobCounters = gen.newTArray(numCounters, 0);
 			for (int j = 0; j < numCounters; j++) {
-				inputBobCounters[j] = gen.inputOfBob(Utils.fromInt(j+1, l.length));
+				inputBobCounters[j] = gen.inputOfBob(new boolean[32]);
 			}
 			gen.flush();
-/*
+			System.out.println("Done with inputAliceCounters");
+
 			Comparator<Integer[]> comparator = new Comparator<Integer[]>(){
 				@Override
 				public int compare(Integer[] a, Integer[] b){
@@ -200,20 +198,21 @@ public class ChiSquare {
 			Arrays.sort(caseIn, comparator);
 			inputAliceCase = gen.newTArray(2, GenCaseNum+numCounters, 0);			
 			for(int i = 0; i < GenCaseNum+numCounters; i++){
-				inputAliceCase[0][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][0].intValue(), l.length));
-				inputAliceCase[1][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][1].intValue(), l.length));
+				inputAliceCase[0][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][0].intValue(), 32));
+			}
+			for(int i = 0; i < GenCaseNum+numCounters; i++){
+				inputAliceCase[1][i] = gen.inputOfAlice(Utils.fromInt(caseIn[i][1].intValue(), 32));
 			}
 			gen.flush();
 			System.out.println("Done with inputAliceCase gen");
 
 			inputBobCase = gen.newTArray(2, EvaCaseNum+numCounters, 0);
 			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
-				inputBobCase[0][j] = gen.inputOfBob(new boolean[l.length]);
+				inputBobCase[0][j] = gen.inputOfBob(new boolean[32]);
 			}
 			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
-				inputBobCase[1][j] = gen.inputOfBob(new boolean[l.length]);
+				inputBobCase[1][j] = gen.inputOfBob(new boolean[32]);
 			}
-			
 			gen.flush();
 			System.out.println("Done with inputBobCase gen");
 			Integer[][] controlIn = new Integer[GenControlNum+numCounters][2];
@@ -229,36 +228,41 @@ public class ChiSquare {
 
 			inputAliceControl = gen.newTArray(2,GenControlNum+numCounters, 0);
 			for(int i = 0; i < GenControlNum+numCounters; i++){
-				inputAliceControl[0][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][0].intValue(), l.length));
-				inputAliceControl[1][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][1].intValue(), l.length));
+				inputAliceControl[0][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][0].intValue(), 32));
+			}
+			for(int i = 0; i < GenControlNum+numCounters; i++){
+				inputAliceControl[1][i] = gen.inputOfAlice(Utils.fromInt(controlIn[i][1].intValue(), 32));
 			}
 			gen.flush();
 			System.out.println("Done with inputAliceControl gen");
 
 			inputBobControl = gen.newTArray(2, EvaControlNum+numCounters, 0);
 			for (int j = 0; j < EvaControlNum+numCounters; j++) {
-				inputBobControl[0][j] = gen.inputOfBob(new boolean[l.length]);
+				inputBobControl[0][j] = gen.inputOfBob(new boolean[32]);
 			}
 			for (int j = 0; j < EvaControlNum+numCounters; j++) {
-				inputBobControl[1][j] = gen.inputOfBob(new boolean[l.length]);
+				inputBobControl[1][j] = gen.inputOfBob(new boolean[32]);
 			}
 			gen.flush();
 			System.out.println("Done with inputBobControl gen");
-			*/
 		}
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			in = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl, 
-					inputAliceCounters, aliceCaseNum, bobCaseNum, aliceControlNum, bobControlNum);
+					inputBobCounters, aliceCaseNum, bobCaseNum, aliceControlNum, bobControlNum);
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
 			System.out.println("chi,p-value");
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			//IntegerLib<T> ilib = new IntegerLib<T>(gen);
+
 			for(int i = in.length-1; i >= 0; i--){
-				//System.out.println(Utils.toFloat(gen.outputToAlice(in[i]), width, offset) + " ");
-				double chi = Utils.toFloat(gen.outputToAlice(in[i]), width, offset);
+				double chi = flib.outputToAlice(in[i]);
+				//double chi = ilib.outputToAlice(in[i]);
+
 				if(chi == 0.0){
 					System.out.println("NA,NA");
 					continue;
@@ -303,10 +307,10 @@ public class ChiSquare {
 			int bobCaseNumInt = caseInput[0];
 			int bobControlNumInt = controlInput[0];
 
-			aliceCaseNum = gen.inputOfAlice(new boolean[l.length]);
-			bobCaseNum = gen.inputOfBob(Utils.fromInt(bobCaseNumInt, l.length));
-			aliceControlNum = gen.inputOfAlice(new boolean[l.length]);
-			bobControlNum = gen.inputOfBob(Utils.fromInt(bobControlNumInt, l.length));
+			aliceCaseNum = gen.inputOfAlice(new boolean[32]);
+			bobCaseNum = gen.inputOfBob(Utils.fromInt(bobCaseNumInt, 32));
+			aliceControlNum = gen.inputOfAlice(new boolean[32]);
+			bobControlNum = gen.inputOfBob(Utils.fromInt(bobControlNumInt, 32));
 
 			System.out.println("Bob case num " + bobCaseNumInt);
 			System.out.println("Bob control num " + bobControlNumInt);
@@ -329,19 +333,11 @@ public class ChiSquare {
 			System.out.println("Eva Control Num eva" + EvaControlNum);
 			System.out.println("Gen Control Num eva" + GenControlNum);
 			
-			inputAliceCounters = gen.newTArray(numCounters, 0);
-			for(int i = 0; i < numCounters; i++){
-				inputAliceCounters[i] = gen.inputOfAlice(Utils.fromInt(i+1, l.length));
-			}
-			
-			gen.flush();
-			
 			inputBobCounters = gen.newTArray(numCounters, 0);
 			for(int i = 0; i < numCounters; i++){
-				inputBobCounters[i] = gen.inputOfBob(new boolean[l.length]);
+				inputBobCounters[i] = gen.inputOfBob(Utils.fromInt(i+1, 32));
 			}
 			gen.flush();
-/*
 			System.out.println("Done with inputCounters eva");
 			
 			Comparator<Integer[]> comparator = new Comparator<Integer[]>(){
@@ -353,10 +349,10 @@ public class ChiSquare {
 			
 			inputAliceCase = gen.newTArray(2, GenCaseNum+numCounters, 0);
 			for (int j = 0; j < GenCaseNum+numCounters; j++) {
-				inputAliceCase[0][j] = gen.inputOfAlice(new boolean[l.length]);
+				inputAliceCase[0][j] = gen.inputOfAlice(new boolean[32]);
 			}
 			for (int j = 0; j < GenCaseNum+numCounters; j++) {
-				inputAliceCase[1][j] = gen.inputOfAlice(new boolean[l.length]);
+				inputAliceCase[1][j] = gen.inputOfAlice(new boolean[32]);
 			}
 
 			gen.flush();
@@ -376,23 +372,24 @@ public class ChiSquare {
 
 			inputBobCase = gen.newTArray(2, EvaCaseNum+numCounters, 0);			
 			for(int i = 0; i < EvaCaseNum+numCounters; i++){
-				inputBobCase[0][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][0].intValue(), l.length));
+				inputBobCase[0][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][0].intValue(), 32));
 			}
 			for(int i = 0; i < EvaCaseNum+numCounters; i++){
-				inputBobCase[1][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][1].intValue(), l.length));
+				inputBobCase[1][i] = gen.inputOfBob(Utils.fromInt(caseIn[i][1].intValue(), 32));
 			}
-			System.out.println("Done with inputBobCase eva");
 			gen.flush();
+			System.out.println("Done with inputBobCase eva");
 
 			inputAliceControl = gen.newTArray(2, GenControlNum+numCounters, 0);
 			for (int j = 0; j < GenControlNum+numCounters; j++) {
-				inputAliceControl[0][j] = gen.inputOfAlice(new boolean[l.length]);
+				inputAliceControl[0][j] = gen.inputOfAlice(new boolean[32]);
 			}
 			for (int j = 0; j < GenControlNum+numCounters; j++) {
-				inputAliceControl[1][j] = gen.inputOfAlice(new boolean[l.length]);
+				inputAliceControl[1][j] = gen.inputOfAlice(new boolean[32]);
 			}
 			gen.flush();
 			System.out.println("Done with inputAliceControl eva");
+			
 			Integer[][] controlIn = new Integer[EvaControlNum+numCounters][2];
 			for(int i = 0; i < numCounters; i++){
 				controlIn[i][0] = i+1;
@@ -406,27 +403,29 @@ public class ChiSquare {
 
 			inputBobControl = gen.newTArray(2,EvaControlNum+numCounters, 0);
 			for(int i = 0; i < EvaControlNum+numCounters; i++){
-				inputBobControl[0][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][0].intValue(), l.length));
+				inputBobControl[0][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][0].intValue(), 32));
 			}
 			for(int i = 0; i < EvaControlNum+numCounters; i++){
-				inputBobControl[1][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][1].intValue(), l.length));
+				inputBobControl[1][i] = gen.inputOfBob(Utils.fromInt(controlIn[i][1].intValue(), 32));
 			}
-
 			gen.flush();
 			System.out.println("Done with inputBobControl eva");
-			*/
+			
 		}
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
-			in = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl, inputAliceCounters,
+			in = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl, inputBobCounters,
 					aliceCaseNum, bobCaseNum, aliceControlNum, bobControlNum);
 		}
 		
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			for(int j =0; j<in.length; j++){
-				gen.outputToAlice(in[j]);
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			//IntegerLib<T> ilib = new IntegerLib<T>(gen);
+			for(int j =in.length-1; j>=0; j--){
+				flib.outputToAlice(in[j]);
+				//ilib.outputToAlice(in[j]);
 			}
 		}
 				

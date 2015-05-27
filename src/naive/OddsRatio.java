@@ -1,5 +1,7 @@
 package naive;
 
+import naiveF.PrepareDataNaive;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;

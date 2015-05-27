@@ -29,7 +29,7 @@ public class AlphaDiversity {
 		FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
 		T [] zero = flib.publicValue(0.0);
 		T [] one = flib.publicValue(1.0);
-		T [] pointOne = flib.publicValue(0.0000000001);
+		T [] pointOne = flib.publicValue(0.000001);
 		int [] rows = {1,2};
 		
 		T[] holder =  flib.publicValue(0.0);
@@ -207,9 +207,6 @@ public class AlphaDiversity {
 		T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
 		res[0] = tStat;
 		res[1] = degreesOfFreedom;
-		//res[0] = ilib.toSecureFloat(aliceControlNum, flib);
-		//res[1] = ilib.toSecureFloat(bobControlNum, flib);
-
 		return res;
 	}
 	
@@ -269,15 +266,17 @@ public class AlphaDiversity {
 			gen.channel.flush();
 			int GenControlNum = controlInput[0].length-2;
 			gen.channel.writeInt(GenControlNum);
-			
+			gen.channel.flush();
+
 			System.out.println(numCounters);
 
 			inputCounters = gen.newTArray(numCounters, 0);
 			for(int i = 0; i < numCounters; i++){
-				inputCounters[i] = gen.inputOfAlice(Utils.fromFloat(i+1, width, offset));
+				inputCounters[i] = gen.inputOfBob(Utils.fromFloat(i+1, width, offset));
 			}
 			gen.flush();
 			System.out.println("Done with inputCounters gen");
+			
 			Double[][] caseIn = new Double[GenCaseNum+numCounters][3];
 			for(int i = 0; i < numCounters; i++){
 				caseIn[i][0] = new Double(i+1);
@@ -302,14 +301,19 @@ public class AlphaDiversity {
 			for (int i = 0; i < GenCaseNum+numCounters; i++){
 				inputAliceCase[2][i] = gen.inputOfAlice(Utils.fromFloat(caseIn[i][2].doubleValue(), width, offset));
 			}
+			
 			gen.flush();
 			System.out.println("Done with inputAliceCase gen");
 
 			inputBobCase = gen.newTArray(3, EvaCaseNum+numCounters, 0);
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < EvaCaseNum+numCounters; j++) {
-					inputBobCase[i][j] = gen.inputOfBob(new boolean[l.length]);
-				}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[0][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[1][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaCaseNum+numCounters; j++) {
+				inputBobCase[2][j] = gen.inputOfBob(new boolean[l.length]);
 			}
 			gen.flush();
 			System.out.println("Done with inputBobCase gen");
@@ -336,22 +340,22 @@ public class AlphaDiversity {
 			}
 			for(int i = 0; i < GenControlNum+numCounters; i++){
 				inputAliceControl[2][i] = gen.inputOfAlice(Utils.fromFloat(controlIn[i][2].doubleValue(), width, offset));
-			}
-
-
+			}			
 			gen.flush();
-			
 			System.out.println("Done with inputAliceControl gen");
-			gen.flush();
 
 			inputBobControl = gen.newTArray(3, EvaControlNum+numCounters, 0);
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < EvaControlNum+numCounters; j++) {
-					inputBobControl[i][j] = gen.inputOfBob(new boolean[l.length]);
-				}
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[0][j] = gen.inputOfBob(new boolean[l.length]);
 			}
-			System.out.println("Done with inputBobControl gen");
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[1][j] = gen.inputOfBob(new boolean[l.length]);
+			}
+			for (int j = 0; j < EvaControlNum+numCounters; j++) {
+				inputBobControl[2][j] = gen.inputOfBob(new boolean[l.length]);
+			}
 			gen.flush();
+			System.out.println("Done with inputBobControl gen");
 		}
 		
 		@Override
@@ -361,23 +365,23 @@ public class AlphaDiversity {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			//for(int j = in.length-1; j >= 0 ; j--){
-					double tStat = Utils.toFloat(gen.outputToAlice(in[0]), width, offset);
-					double df = Utils.toFloat(gen.outputToAlice(in[1]), width, offset);
-					if (tStat == 0.0){
-						System.out.println("NA,NA,NA");
-						return;
-					}
-					if (df <= 0.0){
-						System.out.println(tStat +",NA,NA");
-						return;
-					}
-					TDistribution tDistribution = new TDistribution(df);
-					if(tStat > 0.0)
-						System.out.println(tStat + "," + df + "," + (1-tDistribution.cumulativeProbability(tStat))*2.0);
-					else
-						System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
-			//}
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+
+			double tStat = flib.outputToAlice(in[0]);
+			double df = flib.outputToAlice(in[1]);
+			if (tStat == 0.0){
+				System.out.println("NA,NA,NA");
+				return;
+			}
+			if (df <= 0.0){
+				System.out.println(tStat +",NA,NA");
+				return;
+			}
+			TDistribution tDistribution = new TDistribution(df);
+			if(tStat > 0.0)
+				System.out.println(tStat + "," + df + "," + (1-tDistribution.cumulativeProbability(tStat))*2.0);
+			else
+				System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
 		}
 	}
 	
@@ -440,9 +444,8 @@ public class AlphaDiversity {
 			gen.flush();
 			inputCounters = gen.newTArray(numCounters, 0);
 			for (int j = 0; j < numCounters; j++) {
-				inputCounters[j] = gen.inputOfAlice(new boolean[l.length]);
+				inputCounters[j] = gen.inputOfBob(new boolean[l.length]);
 			}
-
 			gen.flush();
 			System.out.println("Done with inputCounters eva");
 			System.out.println(GenCaseNum+numCounters);
@@ -459,6 +462,7 @@ public class AlphaDiversity {
 			}
 			gen.flush();
 			System.out.println("Done with inputAliceCase eva");
+			
 			Double[][] caseIn = new Double[EvaCaseNum+numCounters][3];
 			for(int i = 0; i < numCounters; i++){
 				caseIn[i][0] = new Double(i+1);
@@ -484,14 +488,18 @@ public class AlphaDiversity {
 			for(int i = 0; i < EvaCaseNum+numCounters; i++){
 				inputBobCase[2][i] = gen.inputOfBob(Utils.fromFloat(caseIn[i][2].doubleValue(), width, offset));
 			}
-
 			gen.flush();
+			System.out.println("Done with inputBobCase eva");
 
 			inputAliceControl = gen.newTArray(3, GenControlNum+numCounters, 0);
-			for (int i = 0; i < 3; ++i) {
-				for (int j = 0; j < GenControlNum+numCounters; j++) {
-					inputAliceControl[i][j] = gen.inputOfAlice(new boolean[l.length]);
-				}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[0][j] = gen.inputOfAlice(new boolean[l.length]);
+			}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[1][j] = gen.inputOfAlice(new boolean[l.length]);
+			}
+			for (int j = 0; j < GenControlNum+numCounters; j++) {
+				inputAliceControl[2][j] = gen.inputOfAlice(new boolean[l.length]);
 			}
 			gen.flush();
 			System.out.println("Done with inputAliceControl eva");
@@ -519,11 +527,8 @@ public class AlphaDiversity {
 			for(int i = 0; i < EvaControlNum+numCounters; i++){
 				inputBobControl[2][i] = gen.inputOfBob(Utils.fromFloat(controlIn[i][2].doubleValue(), width, offset));
 			}
-			
 			gen.flush();
-
 			System.out.println("Done with inputBobControl eva");
-
 		}
 		
 		@Override
@@ -534,9 +539,9 @@ public class AlphaDiversity {
 		
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			for(int j =0; j<in.length; j++){
-				gen.outputToAlice(in[j]);
-			}
+			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			flib.outputToAlice(in[0]);
+			flib.outputToAlice(in[1]);			
 		}
 				
 	}

@@ -6,6 +6,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
+import org.apache.commons.math3.distribution.TDistribution;
 
 import util.EvaRunnable;
 import util.GenRunnable;
@@ -21,7 +22,7 @@ public class DifferentialAbundance {
 		T[][][] inCase = gen.newTArray((inputAliceCase.length + inputBobCase.length)/2 , inputAliceCase[0].length + inputBobCase[0].length, 0);
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 		T[] zero = flib.publicValue(0.0);
-
+		T [] pointOne = flib.publicValue(0.000001);
 		for(int i = 0; i < (inputAliceCase.length + inputBobCase.length)/2; i++){
 			System.arraycopy(inputAliceCase[i], 0, inCase[i], 0, inputAliceCase[i].length);
 			System.arraycopy(inputBobCase[i], 0, inCase[i], inputAliceCase[i].length, inputBobCase[i].length);
@@ -45,7 +46,7 @@ public class DifferentialAbundance {
 			for (int j = 0; j < inCase[0].length; j++){
 				caseSum[i] = flib.add(caseSum[i], inCase[i][j]);
 				caseSumOfSquares[i] = flib.add(caseSumOfSquares[i], 
-						flib.multiply(flib.add(zero, inCase[i][j]), flib.add(zero,inCase[i][j])));
+						flib.multiply(flib.add(pointOne, inCase[i][j]), flib.add(pointOne,inCase[i][j])));
 			}
 		}
 		
@@ -61,14 +62,14 @@ public class DifferentialAbundance {
 			for (int j = 0; j < inControl[0].length; j++){
 				controlSum[i] = flib.add(controlSum[i], inControl[i][j]);
 				controlSumOfSquares[i] = flib.add(controlSumOfSquares[i], 
-						flib.multiply(flib.add(zero, inControl[i][j]), flib.add(zero,inControl[i][j])));
+						flib.multiply(flib.add(pointOne, inControl[i][j]), flib.add(pointOne,inControl[i][j])));
 			}
 		}
 		
 		T[] caseNum = flib.publicValue(inCase[0].length);
 		T[] controlNum = flib.publicValue(inControl[0].length);
 		T[] tStat;
-		T[][][] res = gen.newTArray(4, inputAliceControl.length,0);
+		T[][][] res = gen.newTArray(inCase.length,2,0);
 		
 		for(int i = 0; i < inCase.length; i++){	
 			T[] caseTotalSum;
@@ -89,10 +90,10 @@ public class DifferentialAbundance {
 			controlTotalSum = controlSum[i];
 
 			caseMeanAbundance = flib.div(caseTotalSum, caseNum);
-			caseVarianceSecondTerm = flib.div(flib.multiply(flib.add(zero, caseTotalSum), flib.add(zero,caseTotalSum)), caseNum);
+			caseVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, caseTotalSum), flib.add(pointOne,caseTotalSum)), caseNum);
 			caseVariance = flib.div(flib.sub(caseSumOfSquares[i], caseVarianceSecondTerm), caseNum);
 			controlMeanAbundance = flib.div(controlTotalSum, controlNum);		    
-			controlVarianceSecondTerm = flib.div(flib.multiply(flib.add(zero, controlTotalSum), flib.add(zero, controlTotalSum)), controlNum);
+			controlVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, controlTotalSum), flib.add(pointOne, controlTotalSum)), controlNum);
 			controlVariance = flib.div(flib.sub(controlSumOfSquares[i], controlVarianceSecondTerm), controlNum);
 
 			tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
@@ -102,29 +103,21 @@ public class DifferentialAbundance {
 			tStat = flib.div(tUpper, tLowerSqrt);
 
 			T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
-			degreesOfFreedomTop = flib.multiply(flib.add(zero, degreesOfFreedomTop), flib.add(zero, degreesOfFreedomTop));
+			degreesOfFreedomTop = flib.multiply(flib.add(pointOne, degreesOfFreedomTop), flib.add(pointOne, degreesOfFreedomTop));
 
 			T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-			degreesOfFreedomBottomFirst = flib.multiply(flib.add(zero, degreesOfFreedomBottomFirst), flib.add(zero, degreesOfFreedomBottomFirst));
+			degreesOfFreedomBottomFirst = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomFirst), flib.add(pointOne, degreesOfFreedomBottomFirst));
 			degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, flib.publicValue(1.0)));
 
 			T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-			degreesOfFreedomBottomSecond = flib.multiply(flib.add(zero, degreesOfFreedomBottomSecond), flib.add(zero, degreesOfFreedomBottomSecond));
+			degreesOfFreedomBottomSecond = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomSecond), flib.add(pointOne, degreesOfFreedomBottomSecond));
 			degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, flib.publicValue(1.0)));
 
 			T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
-			res[0][i] = tStat;
-			res[1][i] = degreesOfFreedom;
+			res[i][0] = tStat;
+			res[i][1] = degreesOfFreedom;
 		}
 		return res;
-		
-		//System.arraycopy(outControl[2], 0, outCase[3], 0, inputCounters[0].length);
-
-		//System.arraycopy(res[0], 0, outCase[4], 0, inputCounters[0].length);
-
-		//return outCase;
-		//return controlSumOfSquares;
-		//return inControl;
 	}
 	
 	public static class Generator<T> extends GenRunnable<T> {
@@ -238,13 +231,24 @@ public class DifferentialAbundance {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			for(int i = 0; i < in.length; i++){
-				for(int j = 0; j < in[0].length; j++){
-					System.out.print(Utils.toFloat(gen.outputToAlice(in[0][j]), PLength, VLength) + " ");
-					System.out.print(Utils.toFloat(gen.outputToAlice(in[1][j]), PLength, VLength) + " ");
-					//System.out.print(Utils.toFloat(gen.outputToAlice(in[j]), PLength, VLength) + " ");
-					System.out.println();
+			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+			for(int j = 0; j < in.length; j++){
+				double tStat = flib.outputToAlice(in[j][0]);
+				double df = flib.outputToAlice(in[j][1]);
+				if (tStat == 0.0){
+					System.out.println("NA,NA,NA");
+					continue;
 				}
+				if (df <= 0.0){
+					System.out.println(tStat +",NA,NA");
+					continue;
+				}
+				TDistribution tDistribution = new TDistribution(df);
+				if(tStat > 0.0)
+					System.out.println(tStat + "," + df + "," + (1-tDistribution.cumulativeProbability(tStat))*2.0);
+				else
+					System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
+
 			}			
 		}
 	}
@@ -364,10 +368,10 @@ public class DifferentialAbundance {
 		
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
+			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 			for(int i = 0; i < in.length; i++){
-				for(int j =0; j<in[0].length; j++){
-					gen.outputToAlice(in[i][j]);
-				}
+				flib.outputToAlice(in[i][0]);
+				flib.outputToAlice(in[i][1]);
 			}
 		}
 				

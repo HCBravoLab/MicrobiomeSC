@@ -1,0 +1,21 @@
+connecting
+connected
+Eva Case Dim 1 97
+Eva Case Dim 2 173
+Eva Control Dim 1 97
+Eva Control Dim 2 174
+Gen Case Dim 1 97
+Gen Case Dim 2 173
+Gen Control Dim 1 97
+Gen Control Dim 2 174
+Done with inputAliceCase eva
+Done with inputBobCase eva
+Done with inputAliceControl eva
+Done with inputBobControl eva
+Eva running time:29.351088117
+Number Of AND Gates:1364473568
+
+********************************
+Data Sent from Client :8.474342346191406MB
+Data Sent to Client :8.474342346191406MB
+********************************

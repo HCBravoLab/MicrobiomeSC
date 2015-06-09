@@ -1,1 +1,1 @@
-java -cp bin:lib/* util.EvaRunnable naive.DifferentialAbundance -s pgp_case_2_nozeros.txt -t pgp_control_2_nozeros.txt
+java -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.EvaRunnable naive.DifferentialAbundance -s sparseData/pgp_case_2_nozeros.txt -t sparseData/pgp_control_2_nozeros.txt

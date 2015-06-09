@@ -25,7 +25,7 @@ public class AlphaDiversity {
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 		T[] zero = flib.publicValue(0.0);
 		T[] one = flib.publicValue(1.0);
-		T[] pointOne = flib.publicValue(0.0000001);
+		T [] pointOne = flib.publicValue(0.000001);
 		for(int i = 0; i < (inputAliceCase.length + inputBobCase.length)/2; i++){
 			System.arraycopy(inputAliceCase[i], 0, inCase[i], 0, inputAliceCase[i].length);
 			System.arraycopy(inputBobCase[i], 0, inCase[i], inputAliceCase[i].length, inputBobCase[i].length);

@@ -1,5 +1,8 @@
-/sparseDifferentialAbundance/
-/oddsRatio/
+/alphaDiversity/
+/chiSquare/
 /differentialAbundance/
-/sparseChiSquare/
-/sparseOddsRatio/
+/naive/
+/oddsRatio/
+/perFeature/
+/perFeatureChiSquare/
+/perFeatureSparse/

@@ -111,10 +111,11 @@ public class ChiSquare {
 				controlData[i][0] = Utils.fromInt(controlSta[i].numOfPresent, Width);
 				controlData[i][1] = Utils.fromInt(controlSta[i].totalNum - controlSta[i].numOfPresent, Width);
 			}
+			
 			aliceCase = gen.inputOfAlice(caseData);
 			aliceControl = gen.inputOfAlice(controlData);
-			bobCase = gen.inputOfBob(caseData);
-			bobControl = gen.inputOfBob(controlData);
+			bobCase = gen.inputOfBob(new boolean[caseSta.length][2][Width]);
+			bobControl = gen.inputOfBob(new boolean[controlSta.length][2][Width]);
 			numOfTests = caseSta.length;
 		}
 
@@ -184,8 +185,8 @@ public class ChiSquare {
 				controlData[i][0] = Utils.fromInt(controlSta[i].numOfPresent, Width);
 				controlData[i][1] = Utils.fromInt(controlSta[i].totalNum - controlSta[i].numOfPresent, Width);
 			}
-			aliceCase = gen.inputOfAlice(caseData);
-			aliceControl = gen.inputOfAlice(controlData);
+			aliceCase = gen.inputOfAlice(new boolean[caseSta.length][2][Width]);
+			aliceControl = gen.inputOfAlice(new boolean[controlSta.length][2][Width]);
 			bobCase = gen.inputOfBob(caseData);
 			bobControl = gen.inputOfBob(controlData);
 			numOfTests = caseSta.length;

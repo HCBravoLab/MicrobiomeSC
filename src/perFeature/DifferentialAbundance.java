@@ -11,6 +11,7 @@ import org.apache.commons.math3.distribution.TDistribution;
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
+import circuits.CircuitLib;
 import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
@@ -18,40 +19,108 @@ import flexsc.CompEnv;
 public class DifferentialAbundance {
 	static int PLength = 54;
 	static int VLength = 11;
+	static int filterThreshold = 1;
+
 	
-	static public<T> T[][] compute(CompEnv<T> gen, T[][] inputAliceCase, 
+	static public<T> T[][] onlyOne(CompEnv<T> gen, T[][] inputAliceCase, 
 			T[][] inputBobCase, T[][] inputAliceControl, T[][] inputBobControl){
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
-		T[] pointOne = flib.publicValue(0.000001);
+		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
+
+		CircuitLib<T> cl = new CircuitLib<T>(gen);
+
 		T[] zero = flib.publicValue(0.0);
+		T[] one = flib.publicValue(1.0);
+		T[] negOne = flib.publicValue(-1.0);
+
+
+		T[][] res = gen.newTArray(2, 0);
 		T[] caseSum = flib.publicValue(0.0);
-		T[] caseSumOfSquares = flib.publicValue(0.0);
-		
 		for(int i = 0; i < inputAliceCase.length; i++){
 			caseSum = flib.add(caseSum, flib.add(zero, inputAliceCase[i]));
-			caseSumOfSquares = flib.add(caseSumOfSquares, 
-					flib.multiply(flib.add(pointOne, inputAliceCase[i]), flib.add(pointOne,inputAliceCase[i])));
 		}
 		
 		for(int i = 0; i < inputBobCase.length; i++){
 			caseSum = flib.add(caseSum, flib.add(zero, inputBobCase[i]));
-			caseSumOfSquares = flib.add(caseSumOfSquares, 
-					flib.multiply(flib.add(pointOne, inputBobCase[i]), flib.add(pointOne,inputBobCase[i])));
 		}
 		
 		T[] controlSum = flib.publicValue(0.0);
-		T[] controlSumOfSquares = flib.publicValue(0.0);
-		
 		for(int i = 0; i < inputAliceControl.length; i++){
 			controlSum = flib.add(controlSum, flib.add(zero, inputAliceControl[i]));
-			T[] addSquare = flib.multiply(flib.add(pointOne, inputAliceControl[i]), flib.add(pointOne,inputAliceControl[i]));
-			controlSumOfSquares = flib.add(controlSumOfSquares, addSquare);
 		}
 		
 		for(int i = 0; i < inputBobControl.length; i++){
 			controlSum = flib.add(controlSum, flib.add(zero, inputBobControl[i]));
-			controlSumOfSquares = flib.add(controlSumOfSquares, 
-					flib.multiply(flib.add(pointOne, inputBobControl[i]), flib.add(pointOne,inputBobControl[i])));
+		}
+		T[] caseNum = flib.add(flib.publicValue(inputAliceCase.length), flib.publicValue(inputBobCase.length));
+		T[] controlNum = flib.add(flib.publicValue(inputAliceControl.length), flib.publicValue(inputBobControl.length));
+		T[] tStat = flib.sub(controlSum, caseSum);
+		T sendOneOrZero = flib.eq(tStat, one);
+		tStat = cl.mux(negOne, one, sendOneOrZero);
+		T sendCaseDF = flib.eq(tStat, one);
+		T[] df = cl.mux(flib.sub(caseNum, one), flib.sub(controlNum, one), sendCaseDF);
+		res[0] = tStat;
+		res[1] = df;
+		return res;
+	}
+	
+	static public<T> T filter(CompEnv<T> gen, T[] numAliceCase, 
+			T[] numBobCase, T[] numAliceControl, T[] numBobControl){
+
+		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
+		T[] zero = flib.publicValue(0.0);
+		T[] one = flib.publicValue(0.0);
+
+		T[] threshold = flib.publicValue(filterThreshold);
+
+		T[] caseNum = flib.publicValue(0.0);
+		T[] controlNum = flib.publicValue(0.0);
+		T caseAboveThreshold;
+		T controlAboveThreshold;
+		T bothAboveThreshold;
+		caseNum = flib.add(ilib.toSecureFloat(numAliceCase, flib), ilib.toSecureFloat(numBobCase, flib));
+		controlNum = flib.add(ilib.toSecureFloat(numAliceControl,flib), ilib.toSecureFloat(numBobControl, flib));
+		caseAboveThreshold = ilib.not(flib.leq(caseNum, threshold));
+		controlAboveThreshold = ilib.not(flib.leq(controlNum, threshold));
+		bothAboveThreshold = ilib.not((ilib.or(caseAboveThreshold, controlAboveThreshold)));
+		return bothAboveThreshold;
+	}
+	
+	static public<T> T[][] compute(CompEnv<T> gen, T[][] inputAliceCase, 
+			T[][] inputBobCase, T[][] inputAliceControl, T[][] inputBobControl){
+		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+		T[] pointOne = flib.publicValue(.01);
+		T[] zero = flib.publicValue(0.0);
+		T[] caseSum = flib.publicValue(0.0);
+		T[] caseSumOfSquares = flib.publicValue(0.0);
+		T[] caseShift = pointOne;
+		for(int i = 0; i < inputAliceCase.length; i++){
+			caseSum = flib.add(caseSum, flib.sub(inputAliceCase[i], caseShift));
+			T[] addSquare = flib.multiply(flib.sub(inputAliceCase[i], caseShift), flib.sub(inputAliceCase[i], caseShift));
+			caseSumOfSquares = flib.add(caseSumOfSquares, addSquare);
+		}
+		
+		for(int i = 0; i < inputBobCase.length; i++){
+			caseSum = flib.add(caseSum, flib.sub(inputBobCase[i], caseShift));
+			T[] addSquare = flib.multiply(flib.sub(inputBobCase[i], caseShift), flib.sub(inputBobCase[i], caseShift));
+			caseSumOfSquares = flib.add(caseSumOfSquares, addSquare);
+		}
+		
+		T[] controlSum = flib.publicValue(0.0);
+		T[] controlSumOfSquares = flib.publicValue(0.0);
+		T[] controlShift = pointOne;
+
+		for(int i = 0; i < inputAliceControl.length; i++){
+			controlSum = flib.add(controlSum, flib.sub(inputAliceControl[i], controlShift));
+			T[] addSquare = flib.multiply(flib.sub(inputAliceControl[i], controlShift), flib.sub(inputAliceControl[i], controlShift));
+			controlSumOfSquares = flib.add(controlSumOfSquares, addSquare);
+		}
+		
+		for(int i = 0; i < inputBobControl.length; i++){
+			controlSum = flib.add(controlSum, flib.sub(inputBobControl[i], controlShift));
+			T[] addSquare = flib.multiply(flib.sub(inputBobControl[i], controlShift), flib.sub(inputBobControl[i], controlShift));
+			controlSumOfSquares = flib.add(controlSumOfSquares, addSquare);
 		}
 
 		T[] caseNum = flib.publicValue(inputAliceCase.length + inputBobCase.length);
@@ -76,11 +145,11 @@ public class DifferentialAbundance {
 		caseTotalSum = caseSum;
 		controlTotalSum = controlSum;
 
-		caseMeanAbundance = flib.div(caseTotalSum, caseNum);
-		caseVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, caseTotalSum), flib.add(pointOne,caseTotalSum)), caseNum);
+		caseMeanAbundance = flib.div(flib.add(caseTotalSum, caseShift), caseNum);
+		caseVarianceSecondTerm = flib.div(flib.multiply(caseTotalSum,caseTotalSum), caseNum);
 		caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
-		controlMeanAbundance = flib.div(controlTotalSum, controlNum);		    
-		controlVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, controlTotalSum), flib.add(pointOne, controlTotalSum)), controlNum);
+		controlMeanAbundance = flib.div(flib.add(controlTotalSum, controlShift), controlNum);		    
+		controlVarianceSecondTerm = flib.div(flib.multiply(flib.add(zero, controlTotalSum), flib.add(zero, controlTotalSum)), controlNum);
 		controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
 
 		tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
@@ -93,11 +162,11 @@ public class DifferentialAbundance {
 		degreesOfFreedomTop = flib.multiply(flib.add(zero, degreesOfFreedomTop), flib.add(zero, degreesOfFreedomTop));
 
 		T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-		degreesOfFreedomBottomFirst = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomFirst), flib.add(pointOne, degreesOfFreedomBottomFirst));
+		degreesOfFreedomBottomFirst = flib.multiply(flib.add(zero, degreesOfFreedomBottomFirst), flib.add(zero, degreesOfFreedomBottomFirst));
 		degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, flib.publicValue(1.0)));
 
 		T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-		degreesOfFreedomBottomSecond = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomSecond), flib.add(pointOne, degreesOfFreedomBottomSecond));
+		degreesOfFreedomBottomSecond = flib.multiply(flib.add(zero, degreesOfFreedomBottomSecond), flib.add(zero, degreesOfFreedomBottomSecond));
 		degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, flib.publicValue(1.0)));
 
 		T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
@@ -128,7 +197,12 @@ public class DifferentialAbundance {
 		int EvaControlFeatures;
 		int EvaControlSamples;
 		int GenControlFeatures;
-		int GenControlSamples;
+		int GenControlSamples;		
+
+		T[] numAliceCase;
+		T[] numBobCase;
+		T[] numAliceControl;
+		T[] numBobControl;
 
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
@@ -151,6 +225,7 @@ public class DifferentialAbundance {
 			gen.channel.flush();
 			EvaCaseSamples = gen.channel.readInt();
 			gen.channel.flush();
+
 			GenCaseFeatures = caseInput.length;
 			gen.channel.writeInt(GenCaseFeatures);
 			gen.channel.flush();
@@ -184,6 +259,31 @@ public class DifferentialAbundance {
 		public void secureCompute(CompEnv<T> gen) {
 			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 			T[] l = flib.publicValue(0.0);
+			T result;
+			boolean[] filteredFeatures = new boolean[EvaCaseFeatures];
+			
+			for(int i =0; i < EvaCaseFeatures; i++){
+				int numCase = 0;
+				int numControl = 0;
+				for(int j = 0; j < caseInput[0].length; j++){
+					if(caseInput[i][j] > 0.0){
+						numCase++;
+					}
+				}
+				for(int j = 0; j < controlInput[0].length; j++){
+					if(controlInput[i][j] > 0.0){
+						numControl++;
+					}
+				}
+				
+				numAliceCase = gen.inputOfAlice(Utils.fromInt(numCase, 32));
+				numBobCase = gen.inputOfBob(new boolean[32]);
+				numAliceControl = gen.inputOfAlice(Utils.fromInt(numControl, 32));
+				numBobControl = gen.inputOfBob(new boolean[32]);
+				result = filter(gen, numAliceCase, numBobCase, numAliceControl, numBobControl);
+				filteredFeatures[i] = gen.outputToAlice(result);
+			}
+
 			for(int i =0; i < EvaCaseFeatures; i++){
 				inputAliceCase = gen.newTArray(GenCaseSamples, 0);
 				inputBobCase = gen.newTArray(EvaCaseSamples, 0);
@@ -206,6 +306,11 @@ public class DifferentialAbundance {
 					inputBobControl[j] = gen.inputOfBob(new boolean[l.length]);
 				}
 				gen.flush();
+
+				if(!(filteredFeatures[i])){
+					in[i] = onlyOne(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl);
+					continue;
+				}
 				in[i] = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl);
 			}
 		}
@@ -253,6 +358,10 @@ public class DifferentialAbundance {
 		int EvaControlSamples;
 		int GenControlFeatures;
 		int GenControlSamples;
+		T[] numAliceCase;
+		T[] numBobCase;
+		T[] numAliceControl;
+		T[] numBobControl;
 		
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
@@ -311,6 +420,31 @@ public class DifferentialAbundance {
 		public void secureCompute(CompEnv<T> gen) {
 			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 			T[] l = flib.publicValue(0.0);
+			T result;
+			boolean[] filteredFeatures = new boolean[EvaCaseFeatures];
+			
+			for(int i =0; i < EvaCaseFeatures; i++){
+				int numCase = 0;
+				int numControl = 0;
+				for(int j = 0; j < caseInput[0].length; j++){
+					if(caseInput[i][j] > 0.0){
+						numCase++;
+					}
+				}
+				for(int j = 0; j < controlInput[0].length; j++){
+					if(controlInput[i][j] > 0.0){
+						numControl++;
+					}
+				}
+				
+				numAliceCase = gen.inputOfAlice(new boolean[32]);
+				numBobCase = gen.inputOfBob(Utils.fromInt(numCase, 32));
+				numAliceControl = gen.inputOfAlice(new boolean[32]);
+				numBobControl = gen.inputOfBob(Utils.fromInt(numControl, 32));
+				result = filter(gen, numAliceCase, numBobCase, numAliceControl, numBobControl);
+				filteredFeatures[i] = gen.outputToAlice(result);
+			}
+			
 			for(int i =0; i < EvaCaseFeatures; i++){
 				inputAliceCase = gen.newTArray(GenCaseSamples, 0);
 				inputBobCase = gen.newTArray(EvaCaseSamples, 0);
@@ -333,7 +467,10 @@ public class DifferentialAbundance {
 					inputBobControl[j] = gen.inputOfBob(Utils.fromFloat(controlInput[i][j], PLength, VLength));
 				}
 				gen.flush();
-
+				if(!(filteredFeatures[i])){
+					in[i] = onlyOne(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl);
+					continue;
+				}
 				in[i] = compute(gen, inputAliceCase, inputBobCase, inputAliceControl, inputBobControl);
 			}
 		}

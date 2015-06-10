@@ -6,3 +6,6 @@
 /perFeature/
 /perFeatureChiSquare/
 /perFeatureSparse/
+/perFeatureOddsRatio/
+/sparse/
+/sparseOptimized/

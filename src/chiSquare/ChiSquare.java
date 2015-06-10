@@ -94,7 +94,7 @@ public class ChiSquare {
 			}
 			StatisticsData caseInput = PrepareData.readFile(cmd.getOptionValue("s"));
 			StatisticsData controlInput = PrepareData.readFile(cmd.getOptionValue("t"));
-			chiSquare.Statistics[] caseSta = caseInput.data;
+			Statistics[] caseSta = caseInput.data;
 			Statistics[] controlSta = controlInput.data;
 			boolean[][][] caseData = new boolean[caseSta.length][2][Width];
 

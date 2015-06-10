@@ -11,6 +11,7 @@ import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
+import circuits.CircuitLib;
 import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
@@ -18,6 +19,43 @@ import flexsc.CompEnv;
 public class ChiSquare {
 	static int PLength = 54;
 	static int VLength = 11;
+	static int filterThreshold = 45;
+
+	static public<T> T[] dummyVariable(CompEnv<T> gen){
+		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+		T[] res = flib.publicValue(0.0);
+		return res;
+	}
+	
+	static public<T> T filter(CompEnv<T> gen, T[] numAliceCase, 
+			T[] numBobCase, T[] numAliceControl, T[] numBobControl){
+
+		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
+		CircuitLib<T> cl = new CircuitLib<T>(gen);
+
+		T[] zero = flib.publicValue(0.0);
+		T[] one = flib.publicValue(0.0);
+
+
+		T[] caseNum = flib.publicValue(0.0);
+		T[] controlNum = flib.publicValue(0.0);
+		T caseAboveThreshold;
+		T controlAboveThreshold;
+		T bothAboveThreshold;
+		caseNum = flib.add(ilib.toSecureFloat(numAliceCase, flib), ilib.toSecureFloat(numBobCase, flib));
+		controlNum = flib.add(ilib.toSecureFloat(numAliceControl,flib), ilib.toSecureFloat(numBobControl, flib));
+		//T smaller = flib.leq(caseNum, controlNum);
+		//T[] threshold = cl.mux(caseNum, controlNum, smaller);
+
+		T[] threshold = flib.publicValue(filterThreshold);
+
+		caseAboveThreshold = ilib.not(flib.leq(caseNum, threshold));
+		controlAboveThreshold = ilib.not(flib.leq(controlNum, threshold));
+		bothAboveThreshold = ilib.not((ilib.or(caseAboveThreshold, controlAboveThreshold)));
+		return bothAboveThreshold;
+	}
+	
 	static public<T> T[] compute(CompEnv<T> gen, T[][] inputAliceCase, 
 			T[][] inputBobCase, T[][] inputAliceControl, T[][] inputBobControl){
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
@@ -91,7 +129,10 @@ public class ChiSquare {
 		int GenControlFeatures;
 		int GenControlSamples;
 
-
+		T[] numAliceCase;
+		T[] numBobCase;
+		T[] numAliceControl;
+		T[] numBobControl;
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
 			Options options = new Options();
@@ -144,7 +185,36 @@ public class ChiSquare {
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
+			T result;
+			boolean[] filteredFeatures = new boolean[EvaCaseFeatures];
+			
 			for(int i =0; i < EvaCaseFeatures; i++){
+				int numCase = 0;
+				int numControl = 0;
+				for(int j = 0; j < caseInput[0].length; j++){
+					if(caseInput[i][j] > 0.0){
+						numCase++;
+					}
+				}
+				for(int j = 0; j < controlInput[0].length; j++){
+					if(controlInput[i][j] > 0.0){
+						numControl++;
+					}
+				}
+				
+				numAliceCase = gen.inputOfAlice(Utils.fromInt(numCase, 32));
+				numBobCase = gen.inputOfBob(new boolean[32]);
+				numAliceControl = gen.inputOfAlice(Utils.fromInt(numControl, 32));
+				numBobControl = gen.inputOfBob(new boolean[32]);
+				result = filter(gen, numAliceCase, numBobCase, numAliceControl, numBobControl);
+				filteredFeatures[i] = gen.outputToAlice(result);
+			}
+			
+			for(int i =0; i < EvaCaseFeatures; i++){
+				if(!(filteredFeatures[i])){
+					in[i] = dummyVariable(gen);
+					continue;
+				}
 				inputAliceCase = gen.newTArray(GenCaseSamples, 0);
 				inputBobCase = gen.newTArray(EvaCaseSamples, 0);
 				inputAliceControl = gen.newTArray(GenControlSamples, 0);
@@ -206,6 +276,11 @@ public class ChiSquare {
 		int EvaControlSamples;
 		int GenControlFeatures;
 		int GenControlSamples;
+
+		T[] numAliceCase;
+		T[] numBobCase;
+		T[] numAliceControl;
+		T[] numBobControl;
 		
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
@@ -262,7 +337,36 @@ public class ChiSquare {
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
+			T result;
+			boolean[] filteredFeatures = new boolean[EvaCaseFeatures];
+			
 			for(int i =0; i < EvaCaseFeatures; i++){
+				int numCase = 0;
+				int numControl = 0;
+				for(int j = 0; j < caseInput[0].length; j++){
+					if(caseInput[i][j] > 0.0){
+						numCase++;
+					}
+				}
+				for(int j = 0; j < controlInput[0].length; j++){
+					if(controlInput[i][j] > 0.0){
+						numControl++;
+					}
+				}
+				
+				numAliceCase = gen.inputOfAlice(new boolean[32]);
+				numBobCase = gen.inputOfBob(Utils.fromInt(numCase, 32));
+				numAliceControl = gen.inputOfAlice(new boolean[32]);
+				numBobControl = gen.inputOfBob(Utils.fromInt(numControl, 32));
+				result = filter(gen, numAliceCase, numBobCase, numAliceControl, numBobControl);
+				filteredFeatures[i] = gen.outputToAlice(result);
+			}
+			
+			for(int i =0; i < EvaCaseFeatures; i++){
+				if(!(filteredFeatures[i])){
+					in[i] = dummyVariable(gen);
+					continue;
+				}
 				inputAliceCase = gen.newTArray(GenCaseSamples, 0);
 				inputBobCase = gen.newTArray(EvaCaseSamples, 0);
 				inputAliceControl = gen.newTArray(GenControlSamples, 0);

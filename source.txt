@@ -38,6 +38,9 @@
 ./src/oddsRatio/PrepareData.java
 ./src/oddsRatio/OddsRatio.java
 ./src/oddsRatio/Statistics.java
+./src/perFeatureDifferentialAbundance/DifferentialAbundance.java
+./src/perFeatureDifferentialAbundance/PrepareData.java
+./src/perFeatureDifferentialAbundance/Statistics.java
 ./src/sparseOptimized/DifferentialAbundance.java
 ./src/sparseOptimized/PrepareData.java
 ./src/sparseOptimized/AlphaDiversity.java
@@ -50,5 +53,6 @@
 ./src/perFeatureSparse/AlphaDiversity.java
 ./src/perFeatureSparse/ChiSquare.java
 ./src/perFeatureSparse/PrepareDataNaive.java
+./src/perFeatureSparse/DifferentialAbundanceSafe.java
 ./src/perFeatureSparse/OddsRatio.java
 ./src/perFeatureSparse/PrepareDataDA.java

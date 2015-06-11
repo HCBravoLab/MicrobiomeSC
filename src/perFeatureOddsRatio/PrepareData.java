@@ -33,6 +33,7 @@ public class PrepareData {
 		Scanner scanner; 
 		StatisticsData d = new StatisticsData(); 
 		LinkedList<Statistics> lsta = new LinkedList<Statistics>();
+		int counter = 0;
 		try {
 			scanner = new Scanner(file);
 			String line = scanner.nextLine();
@@ -42,13 +43,14 @@ public class PrepareData {
 				String[] counts = line.split(" ");
 				CountFre(sta, counts);
 				lsta.add(sta);
+				counter++;
 			}
 			scanner.close();			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		d.data = lsta.toArray(new Statistics[0]);
-		d.numberOftuples = d.data.length;
+		d.numberOftuples = counter;
 		return d;
 	}
 }

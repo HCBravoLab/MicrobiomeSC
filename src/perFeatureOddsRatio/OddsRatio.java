@@ -24,7 +24,7 @@ public class OddsRatio {
 	static public int Width = 32;
 	static public int FWidth = 54;
 	static public int FOffset = 11;
-	static int filterThreshold = 1;
+	static int filterThreshold = 5;
 
 	static public<T> T[] dummyVariable(CompEnv<T> gen){
 		FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
@@ -37,15 +37,8 @@ public class OddsRatio {
 			T[] numBobCase, T[] bobCaseTotal, T[] numAliceControl, T[] aliceControlTotal,
 			T[] numBobControl, T[] bobControlTotal){
 
-		//FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
-		CircuitLib<T> cl = new CircuitLib<T>(gen);
-		
-		//T[] threshold = flib.publicValue(filterThreshold);
-		T[] caseTotal = ilib.add(aliceCaseTotal, bobCaseTotal);
-		T[] controlTotal = ilib.add(aliceControlTotal, bobControlTotal);
-		T greaterCaseOrControl = ilib.geq(caseTotal, controlTotal);
-		T[] threshold = cl.mux(caseTotal, controlTotal, greaterCaseOrControl);
+		T[] threshold = ilib.publicValue(filterThreshold);
 		T[] caseNum = ilib.add(numAliceCase, numBobCase);
 		T[] controlNum = ilib.add(numAliceControl, numBobControl);
 		T[] totalPresent = ilib.add(caseNum, controlNum);

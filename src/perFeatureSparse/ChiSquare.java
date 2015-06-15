@@ -59,7 +59,12 @@ public class ChiSquare {
 		T[] fc = ilib.toSecureFloat(c, flib);
 		T[] fd = ilib.toSecureFloat(d, flib);
 			
-		res = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
+		T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
+		T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));
+		upperSecond = flib.multiply(upperSecond, upperSecond);
+		T[] upper = flib.multiply(upperFirst, upperSecond);
+		T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
+		res = flib.div(upper, lower);
 		
 		return res;
 	}
@@ -266,8 +271,6 @@ public class ChiSquare {
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
-
-
 			numAliceCase = gen.inputOfAlice(new boolean[32]);
 			numBobCase = gen.inputOfBob(Utils.fromInt(caseInput[0].length, 32));
 			numAliceControl = gen.inputOfAlice(new boolean[32]);

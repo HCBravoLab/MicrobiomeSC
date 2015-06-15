@@ -66,8 +66,8 @@ public class ChiSquare {
 			res[i] = flib.div(upper, lower);
 		}
 		return res;
-
 	}
+	
 	public static class Generator<T> extends GenRunnable<T> {
 		T[][][] aliceCase;
 		T[][][] bobCase;

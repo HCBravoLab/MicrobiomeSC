@@ -6,7 +6,6 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
 import util.EvaRunnable;
 import util.GenRunnable;
@@ -22,7 +21,6 @@ public class OddsRatio {
 			T[][] inputBobCase, T[][] inputAliceControl, T[][] inputBobControl){
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
-		T[] zero = flib.publicValue(0.0);
 		
 		T[] aliceCaseSum = ilib.publicValue(0.0);
 		for (int i = 0; i < inputAliceCase.length; i++){
@@ -171,7 +169,7 @@ public class OddsRatio {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			System.out.println("chi,p-value");
+			System.out.println("odds ratio");
 			for(int i = 0; i < in.length; i++){
 				System.out.println(Utils.toFloat(gen.outputToAlice(in[i]), PLength, VLength));
 			}	

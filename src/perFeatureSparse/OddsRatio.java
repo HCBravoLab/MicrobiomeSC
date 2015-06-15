@@ -11,6 +11,7 @@ import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
+import circuits.CircuitLib;
 import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
@@ -23,8 +24,12 @@ public class OddsRatio {
 			T[] numAliceControl, T[] numBobControl){
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
+		CircuitLib<T> cl = new CircuitLib<T>(gen);
+
 		T[] zero = flib.publicValue(0.0);
-		
+		T[] zeroInt = ilib.publicValue(0.0);
+		T[] pointFive = flib.publicValue(0.5);
+
 		T[] aliceCaseSum = ilib.publicValue(0.0);
 		for (int i = 0; i < inputAliceCase.length; i++){
 			aliceCaseSum = ilib.add(aliceCaseSum, inputAliceCase[i]);
@@ -55,17 +60,19 @@ public class OddsRatio {
 		T[] d = ilib.sub(controlNum, c);
 			
 		T[] fa = ilib.toSecureFloat(a, flib);
+		T faIsZero = flib.eq(fa, zero);
 		T[] fb = ilib.toSecureFloat(b, flib);
+		T fbIsZero = flib.eq(fb, zero);
 		T[] fc = ilib.toSecureFloat(c, flib);
+		T fcIsZero = flib.eq(fc, zero);
 		T[] fd = ilib.toSecureFloat(d, flib);
-			
-		T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
-		T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));
-		upperSecond = flib.multiply(upperSecond, upperSecond);
-		T[] upper = flib.multiply(upperFirst, upperSecond);
-		T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
-		res = flib.div(upper, lower);
-		
+		T fdIsZero = flib.eq(fd, zero);
+		T aOrDZero = ilib.or(faIsZero, fdIsZero);
+		T bOrCZero = ilib.or(fbIsZero, fcIsZero);
+
+		res = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
+		res = cl.mux(res, flib.publicValue(Double.MAX_VALUE), bOrCZero);
+		//res = fd;
 		return res;
 	}
 	
@@ -105,13 +112,6 @@ public class OddsRatio {
 			T[] l = flib.publicValue(0.0);
 			caseInput = PrepareDataNaive.readFile(cmd.getOptionValue("s"));
 			controlInput = PrepareDataNaive.readFile(cmd.getOptionValue("t"));
-			
-			for(int i = 0; i < caseInput.length; i++){
-				for(int j =0; j < caseInput[0].length; j++){
-					System.out.print(caseInput[i][j] + " ");
-				}
-				System.out.println();
-			}
 			
 			NumFeatures = caseInput.length;
 			
@@ -186,17 +186,10 @@ public class OddsRatio {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
-			System.out.println("chi,p-value");
+			System.out.println("odds ratio");
 			for(int i = 0; i < in.length; i++){
-				double chi = Utils.toFloat(gen.outputToAlice(in[i]), PLength, VLength);
-				//if(chi == 0.0){
-				//	System.out.println("NA,NA");
-				//	continue;
-				//}
-				System.out.println(chi + "," + (1-chiDistribution.cumulativeProbability(chi)));
-				//System.out.print(Utils.toInt(gen.outputToAlice(in[i])) + " ");
-
+				double OR = Utils.toFloat(gen.outputToAlice(in[i]), PLength, VLength);
+				System.out.println(OR);
 			}	
 		}
 	}
@@ -240,12 +233,7 @@ public class OddsRatio {
 			T[] l = flib.publicValue(0.0);
 			caseInput = PrepareDataNaive.readFile(cmd.getOptionValue("s"));
 			controlInput = PrepareDataNaive.readFile(cmd.getOptionValue("t"));
-			for(int i = 0; i < caseInput.length; i++){
-				for(int j =0; j < caseInput[0].length; j++){
-					System.out.print(caseInput[i][j] + " ");
-				}
-				System.out.println();
-			}
+
 			NumFeatures = caseInput.length;
 			in = gen.newTArray(NumFeatures, 0);
 			
@@ -285,6 +273,8 @@ public class OddsRatio {
 		
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
+
+
 			numAliceCase = gen.inputOfAlice(new boolean[32]);
 			numBobCase = gen.inputOfBob(Utils.fromInt(caseInput[0].length, 32));
 			numAliceControl = gen.inputOfAlice(new boolean[32]);

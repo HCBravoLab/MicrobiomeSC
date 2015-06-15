@@ -18,6 +18,7 @@ public class DifferentialAbundance {
 	static public int Width = 32;
 	static public int FWidth = 54;
 	static public int FOffset = 11;
+	static int filterThreshold = 5;
 
 
 	static public<T> T[][] dummyVariable(CompEnv<T> gen){
@@ -34,12 +35,7 @@ public class DifferentialAbundance {
 			T[] numBobControl, T[] bobControlTotal){
 
 		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
-		CircuitLib<T> cl = new CircuitLib<T>(gen);
-		
-		T[] caseTotal = ilib.add(aliceCaseTotal, bobCaseTotal);
-		T[] controlTotal = ilib.add(aliceControlTotal, bobControlTotal);
-		T greaterCaseOrControl = ilib.geq(caseTotal, controlTotal);
-		T[] threshold = cl.mux(caseTotal, controlTotal, greaterCaseOrControl);
+		T[] threshold = ilib.publicValue(filterThreshold);
 		T[] caseNum = ilib.add(numAliceCase, numBobCase);
 		T[] controlNum = ilib.add(numAliceControl, numBobControl);
 		T[] totalPresent = ilib.add(caseNum, controlNum);
@@ -51,69 +47,94 @@ public class DifferentialAbundance {
 			T[] aliceCaseNumSamples,
 			T[] bobCaseTotalSum, T[] bobCaseSumOfSquares, T[] bobCaseNumSamples, 
 			T[] aliceControlTotalSum, T[] aliceControlSumOfSquares, T[] aliceControlNumSamples,
-			T[] bobControlTotalSum, T[] bobControlSumOfSquares, T[] bobControlNumSamples) {	
+			T[] bobControlTotalSum, T[] bobControlSumOfSquares, T[] bobControlNumSamples, T[] numAliceCase,
+			T[] numBobCase, T[] numAliceControl, 
+			T[] numBobControl) {	
 
 		FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
-		T[][] res = gen.newTArray(2, 0);
-		T[] tStat;
+		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
+		CircuitLib<T> cl = new CircuitLib<T>(gen);
 
+		T[] zero = flib.publicValue(0.0);
+		T[] one = flib.publicValue(1.0);
+		T[] negOne = flib.publicValue(-1.0);
+		
 		T[] caseSumOfSquares;
 		T[] controlSumOfSquares;
 
-		T[] caseTotalSum;
-		T[] controlTotalSum;
+		T[] caseSum;
+		T[] controlSum;
 
 		T[] caseNum;
 		T[] controlNum;
 
-		T[] caseVariance;
-		T[] controlVariance;
-		T[] caseVarianceSecondTerm;
-		T[] controlVarianceSecondTerm;
-		T[] caseMeanAbundance;
-		T[] controlMeanAbundance;
-		T[] tUpper;
-		T[] tLowerFirst;
-		T[] tLowerSecond;
-		T[] tLowerSqrt;
-
 		caseSumOfSquares = flib.add(aliceCaseSumOfSquares,bobCaseSumOfSquares);
 		controlSumOfSquares = flib.add(aliceControlSumOfSquares, bobControlSumOfSquares);
 
-		caseTotalSum = flib.add(aliceCaseTotalSum, bobCaseTotalSum);
-		controlTotalSum = flib.add(aliceControlTotalSum, bobControlTotalSum);
+		caseSum = flib.add(aliceCaseTotalSum, bobCaseTotalSum);
+		controlSum = flib.add(aliceControlTotalSum, bobControlTotalSum);
+
+		T[] caseNumPresent = ilib.add(numAliceCase, numBobCase);
+		T[] controlNumPresent= ilib.add(numAliceControl,numBobControl);
 
 		caseNum = flib.add(aliceCaseNumSamples, bobCaseNumSamples);
 		controlNum = flib.add(aliceControlNumSamples, bobControlNumSamples);
+		
+		T[][] res = gen.newTArray(2, 0);
 
-		caseMeanAbundance = flib.div(caseTotalSum, caseNum);
-		caseVarianceSecondTerm = flib.div(flib.multiply(caseTotalSum, caseTotalSum), caseNum);
-		caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
-		controlMeanAbundance = flib.div(controlTotalSum, controlNum);		    
-		controlVarianceSecondTerm = flib.div(flib.multiply(controlTotalSum, controlTotalSum), controlNum);
-		controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
+		T[] zeroInt = ilib.publicValue(0.0);
+		T caseIsZero = ilib.eq(caseNumPresent, zeroInt);
+		T controlIsZero = ilib.eq(controlNumPresent, zeroInt);
+		T oneIsZero = ilib.or(caseIsZero, controlIsZero);
+		T sendOneOrNegOne = ilib.geq(caseNumPresent, controlNumPresent);
+		T[] tStatZero = cl.mux(one, negOne, sendOneOrNegOne);
+		
+		T[] caseMeanAbundance = flib.div(caseSum, caseNum);
+		T[] caseVarianceSecondTerm = flib.div(flib.multiply(caseSum, caseSum), caseNum);
+		T[] caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
+		T[] controlMeanAbundance = flib.div(controlSum, controlNum);		    
+		T[] controlVarianceSecondTerm = flib.div(flib.multiply(controlSum, controlSum), controlNum);
+		T[] controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
 
-		tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
-		tLowerFirst = flib.div(caseVariance, caseNum);
-		tLowerSecond = flib.div(controlVariance, controlNum);
-		tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
-		tStat = flib.div(tUpper, tLowerSqrt);
-
+		T[] tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
+		T tLowerFirstIsZero = flib.eq(caseNumPresent, zero);
+		T[] tLowerFirst = flib.div(caseVariance, caseNum);
+		tLowerFirst = cl.mux(tLowerFirst, zero, tLowerFirstIsZero);
+		
+		T tLowerSecondIsZero = flib.eq(controlNumPresent, zero);
+		
+		T[] tLowerSecond = flib.div(controlVariance, controlNum);
+		tLowerSecond = cl.mux(tLowerSecond, zero, tLowerSecondIsZero);
+		
+		T[] tLowerSqrt = flib.sqrt(flib.add(flib.add(zero,tLowerFirst), flib.add(zero,tLowerSecond)));
+		T[] tStatNonZero = flib.div(tUpper, tLowerSqrt);
+		
 		T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
-		degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
+		degreesOfFreedomTop = flib.multiply(flib.add(zero,degreesOfFreedomTop), flib.add(zero,degreesOfFreedomTop));
 
-		T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-		degreesOfFreedomBottomFirst = flib.multiply(degreesOfFreedomBottomFirst, degreesOfFreedomBottomFirst);
-		degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, flib.publicValue(1.0)));
+		T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, one));
+		degreesOfFreedomBottomFirst = flib.multiply(flib.add(zero,degreesOfFreedomBottomFirst), flib.add(zero,degreesOfFreedomBottomFirst));
+		degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, one));
 
-		T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-		degreesOfFreedomBottomSecond = flib.multiply(degreesOfFreedomBottomSecond, degreesOfFreedomBottomSecond);
-		degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, flib.publicValue(1.0)));
+		T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, one));
+		degreesOfFreedomBottomSecond = flib.multiply(flib.add(zero,degreesOfFreedomBottomSecond), flib.add(zero,degreesOfFreedomBottomSecond));
+		degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, one));
 
 		T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
-		res[0] = tStat;
-		res[1] = degreesOfFreedom;
 		
+		T[] oneInt = ilib.publicValue(1.0);
+		T caseIsOne = ilib.eq(caseNumPresent, oneInt);
+		T controlIsOne = ilib.eq(controlNumPresent, oneInt);
+		T greaterThanOne = ilib.and(ilib.xor(caseIsOne, controlIsOne), oneIsZero);
+		
+		T returnCase = ilib.not(ilib.leq(caseNumPresent, controlNumPresent));
+			
+		T[] tStat = cl.mux(tStatNonZero, tStatZero,  greaterThanOne);
+		T[] dfZero = cl.mux(flib.sub(controlNum, one), flib.sub(caseNum, one), returnCase);
+		T[] df = cl.mux(degreesOfFreedom, dfZero, oneIsZero);
+
+		res[0] = tStat;
+		res[1] = df;
 		return res;
 	}
 
@@ -161,19 +182,25 @@ public class DifferentialAbundance {
 			caseTotalSum = new double[caseSta.numOfTuples];
 			caseSumOfSquares = new double[caseSta.numOfTuples];
 			caseNumOfSamples = new int[caseSta.numOfTuples];
+			caseNumPresent = new int[caseSta.numOfTuples];
+
 			for(int i = 0; i < caseSta.numOfTuples; i++) {
 				caseTotalSum[i] = caseSta.data[i].totalSum;
 				caseSumOfSquares[i] = caseSta.data[i].sumOfSquares;
 				caseNumOfSamples[i] = caseSta.data[i].numOfSamples;
+				caseNumPresent[i] = caseSta.data[i].numOfPresent;
 			}
 
 			controlTotalSum = new double[controlSta.numOfTuples];
 			controlSumOfSquares = new double[controlSta.numOfTuples];
 			controlNumOfSamples = new int[controlSta.numOfTuples];
+			controlNumPresent = new int[controlSta.numOfTuples];
+
 			for(int i = 0; i < controlSta.numOfTuples; i++) {
 				controlTotalSum[i] = controlSta.data[i].totalSum;
 				controlSumOfSquares[i] = controlSta.data[i].sumOfSquares;
 				controlNumOfSamples[i] = controlSta.data[i].numOfSamples;
+				controlNumPresent[i] = controlSta.data[i].numOfPresent;
 			}
 			numOfTests = caseSta.numOfTuples;
 			res = gen.newTArray(numOfTests, 2, 0);
@@ -242,10 +269,16 @@ public class DifferentialAbundance {
 				bobControlSumOfSquares = gen.inputOfBob(new boolean[l.length]);
 				bobControlNumOfSamples = gen.inputOfBob(new boolean[l.length]);
 				
+				aliceCaseNumPresent = gen.inputOfAlice(Utils.fromInt(caseNumPresent[i], Width));
+				bobCaseNumPresent = gen.inputOfBob(new boolean[Width]);
+				aliceControlNumPresent = gen.inputOfAlice(Utils.fromInt(controlNumPresent[i], Width));
+				bobControlNumPresent = gen.inputOfBob(new boolean[Width]);
+				
 				res[i] = compute(gen, aliceCaseTotalSum, aliceCaseSumOfSquares, aliceCaseNumOfSamples,
 						bobCaseTotalSum, bobCaseSumOfSquares, bobCaseNumOfSamples,
 						aliceControlTotalSum, aliceControlSumOfSquares, aliceControlNumOfSamples,
-						bobControlTotalSum, bobControlSumOfSquares, bobControlNumOfSamples);
+						bobControlTotalSum, bobControlSumOfSquares, bobControlNumOfSamples,
+						aliceCaseNumPresent, bobCaseNumPresent, aliceControlNumPresent, bobControlNumPresent);
 				}		}
 
 		@Override
@@ -391,21 +424,28 @@ public class DifferentialAbundance {
 			aliceCaseTotalSum = gen.inputOfAlice(Utils.fromFloat(caseTotalSum[i], FWidth, FOffset));
 			aliceCaseSumOfSquares = gen.inputOfAlice(Utils.fromFloat(caseSumOfSquares[i], FWidth, FOffset));
 			aliceCaseNumOfSamples = gen.inputOfAlice(Utils.fromFloat(caseNumOfSamples[i], FWidth, FOffset));
+			aliceCaseNumPresent = gen.inputOfAlice(Utils.fromInt(caseNumPresent[i], Width));
+
 			bobCaseTotalSum = gen.inputOfBob(new boolean[l.length]);
 			bobCaseSumOfSquares = gen.inputOfBob(new boolean[l.length]);
 			bobCaseNumOfSamples = gen.inputOfBob(new boolean[l.length]);
+			bobCaseNumPresent = gen.inputOfBob(new boolean[Width]);
 
 			aliceControlTotalSum = gen.inputOfAlice(Utils.fromFloat(controlTotalSum[i], FWidth, FOffset));
 			aliceControlSumOfSquares = gen.inputOfAlice(Utils.fromFloat(controlSumOfSquares[i], FWidth, FOffset));
 			aliceControlNumOfSamples = gen.inputOfAlice(Utils.fromFloat(controlNumOfSamples[i], FWidth, FOffset));
+			aliceControlNumPresent = gen.inputOfAlice(Utils.fromInt(controlNumPresent[i], Width));
+
 			bobControlTotalSum = gen.inputOfBob(new boolean[l.length]);
 			bobControlSumOfSquares = gen.inputOfBob(new boolean[l.length]);
 			bobControlNumOfSamples = gen.inputOfBob(new boolean[l.length]);
+			bobControlNumPresent = gen.inputOfBob(new boolean[Width]);
 			
 			res[i] = compute(gen, aliceCaseTotalSum, aliceCaseSumOfSquares, aliceCaseNumOfSamples,
 					bobCaseTotalSum, bobCaseSumOfSquares, bobCaseNumOfSamples,
 					aliceControlTotalSum, aliceControlSumOfSquares, aliceControlNumOfSamples,
-					bobControlTotalSum, bobControlSumOfSquares, bobControlNumOfSamples);
+					bobControlTotalSum, bobControlSumOfSquares, bobControlNumOfSamples, 
+					aliceCaseNumPresent, bobCaseNumPresent, aliceControlNumPresent, bobControlNumPresent);
 			}
 		}
 

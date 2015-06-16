@@ -1,1 +1,1 @@
-java -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.EvaRunnable chiSquare.ChiSquare -s sparseData/mc_case_part2_transpose.txt -t sparseData/mc_control_part2_transpose.txt 
+java -Xmx2500m -d64 -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.EvaRunnable chiSquareFilter.ChiSquare -s data/mc_case_part2_transpose.txt -t data/mc_control_part2_transpose.txt 

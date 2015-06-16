@@ -1,3 +1,9 @@
+./src/chiSquareFilter/PrepareData.java
+./src/chiSquareFilter/ChiSquare.java
+./src/chiSquareFilter/Statistics.java
+./src/oddsRatioFilter/PrepareData.java
+./src/oddsRatioFilter/OddsRatio.java
+./src/oddsRatioFilter/Statistics.java
 ./src/differentialAbundance/DifferentialAbundance.java
 ./src/differentialAbundance/PrepareData.java
 ./src/differentialAbundance/Statistics.java
@@ -32,6 +38,9 @@
 ./src/perFeatureOddsRatio/PrepareData.java
 ./src/perFeatureOddsRatio/OddsRatio.java
 ./src/perFeatureOddsRatio/Statistics.java
+./src/differentialAbundanceFilter/DifferentialAbundance.java
+./src/differentialAbundanceFilter/PrepareData.java
+./src/differentialAbundanceFilter/Statistics.java
 ./src/perFeatureChiSquare/PrepareData.java
 ./src/perFeatureChiSquare/ChiSquare.java
 ./src/perFeatureChiSquare/Statistics.java

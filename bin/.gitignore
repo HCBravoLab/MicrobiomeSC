@@ -1,12 +1,4 @@
-/alphaDiversity/
-/chiSquare/
+/oddsRatioFilter/
+/differentialAbundanceFilter/
 /differentialAbundance/
-/naive/
-/oddsRatio/
-/perFeature/
-/perFeatureChiSquare/
-/perFeatureDifferentialAbundance/
-/perFeatureOddsRatio/
-/perFeatureSparse/
-/sparse/
-/sparseOptimized/
+/chiSquareFilter/

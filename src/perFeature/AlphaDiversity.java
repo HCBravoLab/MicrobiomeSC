@@ -21,7 +21,7 @@ public class AlphaDiversity {
 	
 	static public<T> T[] computeSimpsons(CompEnv<T> gen, T[][] input){
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
-		T[] pointOne = flib.publicValue(0.000001);
+		T[] pointOne = flib.publicValue(0.0000000001);
 		T[] one = flib.publicValue(1.0);
 		T[] zero = flib.publicValue(0.0);
 		T[] simpsons = flib.publicValue(0.0);
@@ -30,12 +30,11 @@ public class AlphaDiversity {
 
 		for(int i = 0; i < input.length ; i++){
 				simpsonsUpper = flib.add(simpsonsUpper, 
-						flib.multiply(flib.add(zero, input[i]), flib.add(zero,flib.sub(input[i], one))));
-				simpsonsLower = flib.add(simpsonsLower, flib.add(zero,input[i]));
+						flib.multiply(flib.sub(input[i], pointOne), flib.sub(flib.sub(input[i], one), pointOne)));
+				simpsonsLower = flib.add(simpsonsLower, flib.sub(input[i], pointOne));
 		}
-		
-		simpsons = flib.div(simpsonsUpper, flib.multiply(flib.add(zero,
-					simpsonsLower), flib.add(zero, flib.sub(simpsonsLower,one))));
+		simpsonsLower = flib.add(pointOne, simpsonsLower);
+		simpsons = flib.div(flib.add(pointOne,simpsonsUpper), flib.multiply(simpsonsLower,flib.sub(simpsonsLower,one)));
 
 		return simpsons;
 	}
@@ -43,36 +42,37 @@ public class AlphaDiversity {
 	static public<T> T[][] compute(CompEnv<T> gen, T[][] aliceCaseSimpsons, 
 			T[][] bobCaseSimpsons, T[][] aliceControlSimpsons, T[][] bobControlSimpsons){
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
-		T[] pointOne = flib.publicValue(0.000001);
+		T[] pointOne = flib.publicValue(0.1);
 		T[] zero = flib.publicValue(0.0);
 		T[] caseSum = flib.publicValue(0.0);
 		T[] caseSumOfSquares = flib.publicValue(0.0);
-		
+		T[] caseShift = pointOne;
 		for(int i = 0; i < aliceCaseSimpsons.length; i++){
-			caseSum = flib.add(caseSum, flib.add(zero,aliceCaseSimpsons[i]));
+			caseSum = flib.add(caseSum, flib.sub(aliceCaseSimpsons[i], caseShift));
 			caseSumOfSquares = flib.add(caseSumOfSquares, 
-					flib.multiply(flib.add(zero, aliceCaseSimpsons[i]), flib.add(zero,aliceCaseSimpsons[i])));
+					flib.multiply(flib.sub(aliceCaseSimpsons[i], caseShift), flib.sub(aliceCaseSimpsons[i], caseShift)));
 		}
 		
 		for(int i = 0; i < bobCaseSimpsons.length; i++){
-			caseSum = flib.add(caseSum, flib.add(zero,bobCaseSimpsons[i]));
+			caseSum = flib.add(caseSum, flib.sub(bobCaseSimpsons[i], caseShift));
 			caseSumOfSquares = flib.add(caseSumOfSquares, 
-					flib.multiply(flib.add(zero, bobCaseSimpsons[i]), flib.add(zero,bobCaseSimpsons[i])));
+					flib.multiply(flib.sub(bobCaseSimpsons[i], caseShift), flib.sub(bobCaseSimpsons[i], caseShift)));
 		}
 		
 		T[] controlSum = flib.publicValue(0.0);
 		T[] controlSumOfSquares = flib.publicValue(0.0);
-		
+		T[] controlShift = pointOne;
+
 		for(int i = 0; i < aliceControlSimpsons.length; i++){
-			controlSum = flib.add(controlSum, flib.add(zero,aliceControlSimpsons[i]));
-			T[] addSquare = flib.multiply(flib.add(zero, aliceControlSimpsons[i]), flib.add(zero,aliceControlSimpsons[i]));
+			controlSum = flib.add(controlSum, flib.sub(aliceControlSimpsons[i], controlShift));
+			T[] addSquare = flib.multiply(flib.sub(aliceControlSimpsons[i], controlShift), flib.sub(aliceControlSimpsons[i], controlShift));
 			controlSumOfSquares = flib.add(controlSumOfSquares, addSquare);
 		}
 		
 		for(int i = 0; i < bobControlSimpsons.length; i++){
-			controlSum = flib.add(controlSum, flib.add(zero,bobControlSimpsons[i]));
+			controlSum = flib.add(controlSum, flib.sub(bobControlSimpsons[i], controlShift));
 			controlSumOfSquares = flib.add(controlSumOfSquares, 
-					flib.multiply(flib.add(zero, bobControlSimpsons[i]), flib.add(zero,bobControlSimpsons[i])));
+					flib.multiply(flib.sub(bobControlSimpsons[i], controlShift), flib.sub(bobControlSimpsons[i], controlShift)));
 		}
 
 		T[] caseNum = flib.publicValue(aliceCaseSimpsons.length + bobCaseSimpsons.length);
@@ -97,11 +97,11 @@ public class AlphaDiversity {
 		caseTotalSum = caseSum;
 		controlTotalSum = controlSum;
 
-		caseMeanAbundance = flib.div(caseTotalSum, caseNum);
-		caseVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, caseTotalSum), flib.add(pointOne,caseTotalSum)), caseNum);
+		caseMeanAbundance = flib.div(flib.add(caseTotalSum, caseShift), caseNum);
+		caseVarianceSecondTerm = flib.div(flib.multiply(caseTotalSum, caseTotalSum), caseNum);
 		caseVariance = flib.div(flib.sub(caseSumOfSquares, caseVarianceSecondTerm), caseNum);
-		controlMeanAbundance = flib.div(controlTotalSum, controlNum);		    
-		controlVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, controlTotalSum), flib.add(pointOne, controlTotalSum)), controlNum);
+		controlMeanAbundance = flib.div(flib.add(controlSum, controlShift), controlNum);		    
+		controlVarianceSecondTerm = flib.div(flib.multiply(controlSum, controlSum), controlNum);
 		controlVariance = flib.div(flib.sub(controlSumOfSquares, controlVarianceSecondTerm), controlNum);
 
 		tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
@@ -111,14 +111,14 @@ public class AlphaDiversity {
 		tStat = flib.div(tUpper, tLowerSqrt);
 
 		T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
-		degreesOfFreedomTop = flib.multiply(flib.add(pointOne, degreesOfFreedomTop), flib.add(pointOne, degreesOfFreedomTop));
+		degreesOfFreedomTop = flib.multiply(flib.add(zero,degreesOfFreedomTop), flib.add(zero,degreesOfFreedomTop));
 
 		T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-		degreesOfFreedomBottomFirst = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomFirst), flib.add(pointOne, degreesOfFreedomBottomFirst));
+		degreesOfFreedomBottomFirst = flib.multiply(flib.add(zero,degreesOfFreedomBottomFirst), flib.add(zero,degreesOfFreedomBottomFirst));
 		degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, flib.publicValue(1.0)));
 
 		T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-		degreesOfFreedomBottomSecond = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomSecond), flib.add(pointOne, degreesOfFreedomBottomSecond));
+		degreesOfFreedomBottomSecond = flib.multiply(flib.add(zero,degreesOfFreedomBottomSecond), flib.add(zero,degreesOfFreedomBottomSecond));
 		degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, flib.publicValue(1.0)));
 
 		T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));

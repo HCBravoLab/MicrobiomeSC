@@ -62,17 +62,17 @@ public class ChiSquare {
 			T[][] bobControlPresent, T[][] bobControlNum, int numOfTests) {
 
 		T[][] res = gen.newTArray(numOfTests, 0);
-
+		CircuitLib<T> cl = new CircuitLib<T>(gen);
+		T[] aboveThreshold = gen.newTArray(1);
 		IntegerLib<T> lib = new IntegerLib<T>(gen);
 		FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
-
+		T[] threshold = lib.publicValue(filterThreshold);
+		T[] zero = flib.publicValue(0.0);
 		for(int i = 0; i < numOfTests; i++){			
 			T[] a = lib.add(aliceCasePresent[i], bobCasePresent[i]);
 			T[] b = lib.add(aliceCaseNum[i], bobCaseNum[i]);
 			T[] c = lib.add(aliceControlPresent[i], bobControlPresent[i]);
 			T[] d = lib.add(aliceControlNum[i], bobControlNum[i]);
-			//T[] g = lib.add(a, c);
-			//T[] k = lib.add(b, d);
 
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
@@ -209,49 +209,17 @@ public class ChiSquare {
 		public void secureCompute(CompEnv<T> gen) {
 			T[] result = gen.newTArray(numOfTests);
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
-			
-			/*
-			boolean[] filteredFeatures = new boolean[numOfTests];
-
-			aliceCaseNumPresentAr = gen.newTArray(numOfTests,Width);
-			aliceCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobCaseNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			aliceControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			aliceControlTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobControlTotalNumAr = gen.newTArray(numOfTests,Width);
-			for(int i =0; i < numOfTests; i++){				
-				aliceCaseNumPresentAr[i] = gen.inputOfAlice(Utils.fromInt(caseNumPresent[i], Width));
-				aliceCaseTotalNumAr[i] = gen.inputOfAlice(Utils.fromInt(caseTotalNum[i], Width));
-				bobCaseNumPresentAr[i] = gen.inputOfBob(new boolean[Width]);
-				bobCaseTotalNumAr[i] = gen.inputOfBob(new boolean[Width]);
-				aliceControlNumPresentAr[i] = gen.inputOfAlice(Utils.fromInt(controlNumPresent[i], Width));
-				aliceControlTotalNumAr[i] = gen.inputOfAlice(Utils.fromInt(controlTotalNum[i], Width));
-				bobControlNumPresentAr[i] = gen.inputOfBob(new boolean[Width]);
-				bobControlTotalNumAr[i] = gen.inputOfBob(new boolean[Width]);
-			}
-		
-			result = filter(gen, aliceCaseNumPresentAr, aliceCaseTotalNumAr, 
-				bobCaseNumPresentAr, bobCaseTotalNumAr,
-				aliceControlNumPresentAr, aliceControlTotalNumAr,
-				bobControlNumPresentAr, bobControlTotalNumAr);
-			for(int i =0; i < numOfTests; i++){				
-				filteredFeatures[i] = gen.outputToAlice(result[i]);
-			}
-			*/
-
 			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
 			T[] zero = flib.publicValue(0.0);
 			int numFiltered = 0;
-			aliceCaseNumPresentAr = gen.newTArray(numOfTests, Width);
-			aliceCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobCaseNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			aliceControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			aliceControlTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobControlTotalNumAr = gen.newTArray(numOfTests,Width);
+			aliceCaseNumPresentAr = gen.newTArray(numOfTests, 0);
+			aliceCaseTotalNumAr = gen.newTArray(numOfTests,0);
+			bobCaseNumPresentAr = gen.newTArray(numOfTests,0);
+			bobCaseTotalNumAr = gen.newTArray(numOfTests,0);
+			aliceControlNumPresentAr = gen.newTArray(numOfTests,0);
+			aliceControlTotalNumAr = gen.newTArray(numOfTests,0);
+			bobControlNumPresentAr = gen.newTArray(numOfTests,0);
+			bobControlTotalNumAr = gen.newTArray(numOfTests,0);
 
 			for(int i = 0; i < numOfTests; i++){				
 				aliceCaseNumPresentAr[i] = gen.inputOfAlice(Utils.fromInt(caseNumPresent[i], Width));
@@ -263,12 +231,13 @@ public class ChiSquare {
 				bobControlNumPresentAr[i] = gen.inputOfBob(new boolean[Width]);
 				bobControlTotalNumAr[i] = gen.inputOfBob(new boolean[Width]);
 			}
-				result = filter(gen, aliceCaseNumPresentAr, aliceCaseTotalNumAr, 
-						bobCaseNumPresentAr, bobCaseTotalNumAr,
-						aliceControlNumPresentAr, aliceControlTotalNumAr,
-						bobControlNumPresentAr, bobControlTotalNumAr, numOfTests);
+			result = filter(gen, aliceCaseNumPresentAr, aliceCaseTotalNumAr, 
+					bobCaseNumPresentAr, bobCaseTotalNumAr,
+					aliceControlNumPresentAr, aliceControlTotalNumAr,
+					bobControlNumPresentAr, bobControlTotalNumAr, numOfTests);
 			
-			boolean[] filResOut = cl.declassifyToBoth2(result);
+			boolean[] filResOut = cl.declassifyToBoth(result);
+		
 			//System.out.println(filRes[0]);
 			int[] indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
@@ -277,14 +246,14 @@ public class ChiSquare {
 					numFiltered++;
 				}
 			}
-			aliceCaseNumPresentAr2 = gen.newTArray(numFiltered, Width);
-			aliceCaseTotalNumAr2 = gen.newTArray(numFiltered,Width);
-			bobCaseNumPresentAr2 = gen.newTArray(numFiltered,Width);
-			bobCaseTotalNumAr2 = gen.newTArray(numFiltered,Width);
-			aliceControlNumPresentAr2 = gen.newTArray(numFiltered,Width);
-			aliceControlTotalNumAr2 = gen.newTArray(numFiltered,Width);
-			bobControlNumPresentAr2 = gen.newTArray(numFiltered,Width);
-			bobControlTotalNumAr2 = gen.newTArray(numFiltered,Width);
+			aliceCaseNumPresentAr2 = gen.newTArray(numFiltered, 0);
+			aliceCaseTotalNumAr2 = gen.newTArray(numFiltered,0);
+			bobCaseNumPresentAr2 = gen.newTArray(numFiltered,0);
+			bobCaseTotalNumAr2 = gen.newTArray(numFiltered,0);
+			aliceControlNumPresentAr2 = gen.newTArray(numFiltered,0);
+			aliceControlTotalNumAr2 = gen.newTArray(numFiltered,0);
+			bobControlNumPresentAr2 = gen.newTArray(numFiltered,0);
+			bobControlTotalNumAr2 = gen.newTArray(numFiltered,0);
 			for(int i = 0; i < numFiltered; i++){				
 					aliceCaseNumPresentAr2[i] = aliceCaseNumPresentAr[indices[i]];
 					aliceCaseTotalNumAr2[i] = aliceCaseTotalNumAr[indices[i]];
@@ -296,29 +265,10 @@ public class ChiSquare {
 					bobControlTotalNumAr2[i] = bobControlTotalNumAr[indices[i]];
 			}
 				
-/*
-				result = filter(gen, aliceCaseNumPresent, aliceCaseTotalNum, 
-					bobCaseNumPresent, bobCaseTotalNum,
-					aliceControlNumPresent, aliceControlTotalNum,
-					bobControlNumPresent, bobControlTotalNum);
-				T[] filRes = gen.newTArray(1);
-				filRes[0] = result;
-				boolean[] filResOut = cl.declassifyToBoth2(filRes);
-				//System.out.println(filRes[0]);
-				
-				if(!(filResOut[0])){
-					res[i] = zero;
-					//System.out.println("done with dummy");
-
-					continue;
-				}
-				*/
-			
-				res = compute2(gen, aliceCaseNumPresentAr2, aliceCaseTotalNumAr2, 
-						bobCaseNumPresentAr2, bobCaseTotalNumAr2,
-						aliceControlNumPresentAr2, aliceControlTotalNumAr2,
-						bobControlNumPresentAr2, bobControlTotalNumAr2, numFiltered);
-				//System.out.println("done with compute");
+			res = compute2(gen, aliceCaseNumPresentAr2, aliceCaseTotalNumAr2, 
+					bobCaseNumPresentAr2, bobCaseTotalNumAr2,
+					aliceControlNumPresentAr2, aliceControlTotalNumAr2,
+					bobControlNumPresentAr2, bobControlTotalNumAr2, numFiltered);
 		}
 
 		@Override
@@ -426,50 +376,18 @@ public class ChiSquare {
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			T[] result = gen.newTArray(numOfTests);
-
-/*
-			aliceCaseNumPresentAr = gen.newTArray(numOfTests,Width);
-			aliceCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobCaseNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			aliceControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			aliceControlTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobControlTotalNumAr = gen.newTArray(numOfTests,Width);
-			boolean[] filteredFeatures = new boolean[numOfTests];
-			for(int i =0; i < numOfTests; i++){
-				aliceCaseNumPresentAr[i] = gen.inputOfAlice(new boolean[Width]);
-				aliceCaseTotalNumAr[i] = gen.inputOfAlice(new boolean[Width]);
-				bobCaseNumPresentAr[i] = gen.inputOfBob(Utils.fromInt(caseNumPresent[i], Width));
-				bobCaseTotalNumAr[i] = gen.inputOfBob(Utils.fromInt(caseTotalNum[i], Width));
-				aliceControlNumPresentAr[i] = gen.inputOfAlice(new boolean[Width]);
-				aliceControlTotalNumAr[i] = gen.inputOfAlice(new boolean[Width]);
-				bobControlNumPresentAr[i] = gen.inputOfBob(Utils.fromInt(controlNumPresent[i], Width));
-				bobControlTotalNumAr[i] = gen.inputOfBob(Utils.fromInt(controlTotalNum[i], Width));
-			}
-
-			result = filter(gen, aliceCaseNumPresentAr, aliceCaseTotalNumAr, 
-					bobCaseNumPresent, bobCaseTotalNumAr,
-					aliceControlNumPresentAr, aliceControlTotalNumAr,
-					bobControlNumPresentAr, bobControlTotalNumAr);
-			
-			for(int i = 0; i < numOfTests; i++){
-				filteredFeatures[i] = gen.outputToAlice(result[i]);
-			}
-			*/
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
-
 			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
+			
 			T[] zero = flib.publicValue(0.0);
-
-			aliceCaseNumPresentAr = gen.newTArray(numOfTests, Width);
-			aliceCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobCaseNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobCaseTotalNumAr = gen.newTArray(numOfTests,Width);
-			aliceControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			aliceControlTotalNumAr = gen.newTArray(numOfTests,Width);
-			bobControlNumPresentAr = gen.newTArray(numOfTests,Width);
-			bobControlTotalNumAr = gen.newTArray(numOfTests,Width);
+			aliceCaseNumPresentAr = gen.newTArray(numOfTests, 0);
+			aliceCaseTotalNumAr = gen.newTArray(numOfTests,0);
+			bobCaseNumPresentAr = gen.newTArray(numOfTests,0);
+			bobCaseTotalNumAr = gen.newTArray(numOfTests,0);
+			aliceControlNumPresentAr = gen.newTArray(numOfTests,0);
+			aliceControlTotalNumAr = gen.newTArray(numOfTests,0);
+			bobControlNumPresentAr = gen.newTArray(numOfTests,0);
+			bobControlTotalNumAr = gen.newTArray(numOfTests,0);
 			int numFiltered = 0;
 			for(int i = 0; i < numOfTests; i++){
 				aliceCaseNumPresentAr[i] = gen.inputOfAlice(new boolean[Width]);
@@ -481,68 +399,45 @@ public class ChiSquare {
 				bobControlNumPresentAr[i] = gen.inputOfBob(Utils.fromInt(controlNumPresent[i], Width));
 				bobControlTotalNumAr[i] = gen.inputOfBob(Utils.fromInt(controlTotalNum[i], Width));
 			}
-				result = filter(gen, aliceCaseNumPresentAr, aliceCaseTotalNumAr, 
-						bobCaseNumPresentAr, bobCaseTotalNumAr,
-						aliceControlNumPresentAr, aliceControlTotalNumAr,
-						bobControlNumPresentAr, bobControlTotalNumAr, numOfTests);
+			result = filter(gen, aliceCaseNumPresentAr, aliceCaseTotalNumAr, 
+					bobCaseNumPresentAr, bobCaseTotalNumAr,
+					aliceControlNumPresentAr, aliceControlTotalNumAr,
+					bobControlNumPresentAr, bobControlTotalNumAr, numOfTests);
 			
-				boolean[] filResOut = cl.declassifyToBoth2(result);
-				//System.out.println(filRes[0]);
-				int[] indices = new int[numOfTests];
-				for(int i = 0; i < numOfTests; i++){
-					if(filResOut[i]){
-						indices[numFiltered] = i;
-						numFiltered++;
-					}
+			boolean[] filResOut = cl.declassifyToBoth(result);
+			//System.out.println(filRes[0]);
+			int[] indices = new int[numOfTests];
+			for(int i = 0; i < numOfTests; i++){
+				if(filResOut[i]){
+					indices[numFiltered] = i;
+					numFiltered++;
 				}
-				//System.out.println(filRes[0]);
+			}
 
-				aliceCaseNumPresentAr2 = gen.newTArray(numFiltered, Width);
-				aliceCaseTotalNumAr2 = gen.newTArray(numFiltered,Width);
-				bobCaseNumPresentAr2 = gen.newTArray(numFiltered,Width);
-				bobCaseTotalNumAr2 = gen.newTArray(numFiltered,Width);
-				aliceControlNumPresentAr2 = gen.newTArray(numFiltered,Width);
-				aliceControlTotalNumAr2 = gen.newTArray(numFiltered,Width);
-				bobControlNumPresentAr2 = gen.newTArray(numFiltered,Width);
-				bobControlTotalNumAr2 = gen.newTArray(numFiltered,Width);
-				for(int i = 0; i < numFiltered; i++){				
-						aliceCaseNumPresentAr2[i] = aliceCaseNumPresentAr[indices[i]];
-						aliceCaseTotalNumAr2[i] = aliceCaseTotalNumAr[indices[i]];
-						bobCaseNumPresentAr2[i] = bobCaseNumPresentAr[indices[i]];
-						bobCaseTotalNumAr2[i] = bobCaseTotalNumAr[indices[i]];
-						aliceControlNumPresentAr2[i] = aliceControlNumPresentAr[indices[i]];
-						aliceControlTotalNumAr2[i] = aliceControlTotalNumAr[indices[i]];
-						bobControlNumPresentAr2[i] = bobControlNumPresentAr[indices[i]];
-						bobControlTotalNumAr2[i] = bobControlTotalNumAr[indices[i]];
-				}
-				/*
-				result = filter(gen, aliceCaseNumPresent, aliceCaseTotalNum, 
-						bobCaseNumPresent, bobCaseTotalNum,
-						aliceControlNumPresent, aliceControlTotalNum,
-						bobControlNumPresent, bobControlTotalNum);
-				//System.out.println("done with filter");
-				T[] filRes = gen.newTArray(1);
-				filRes[0] = result;
-				boolean[] filResOut = cl.declassifyToBoth2(filRes);
-				//System.out.println(filRes[0]);
-				
-				if(!(filResOut[0])){
-					res[i] = zero;
-					//System.out.println("done with dummy");
-
-					continue;
-				}
-				*/
-			
-				res = compute2(gen, aliceCaseNumPresentAr2, aliceCaseTotalNumAr2, 
-						bobCaseNumPresentAr2, bobCaseTotalNumAr2,
-						aliceControlNumPresentAr2, aliceControlTotalNumAr2,
-						bobControlNumPresentAr2, bobControlTotalNumAr2, numFiltered);
-				//System.out.println("done with compute");
-
-			
+			aliceCaseNumPresentAr2 = gen.newTArray(numFiltered, 0);
+			aliceCaseTotalNumAr2 = gen.newTArray(numFiltered,0);
+			bobCaseNumPresentAr2 = gen.newTArray(numFiltered,0);
+			bobCaseTotalNumAr2 = gen.newTArray(numFiltered,0);
+			aliceControlNumPresentAr2 = gen.newTArray(numFiltered,0);
+			aliceControlTotalNumAr2 = gen.newTArray(numFiltered,0);
+			bobControlNumPresentAr2 = gen.newTArray(numFiltered,0);
+			bobControlTotalNumAr2 = gen.newTArray(numFiltered,0);
+			for(int i = 0; i < numFiltered; i++){				
+					aliceCaseNumPresentAr2[i] = aliceCaseNumPresentAr[indices[i]];
+					aliceCaseTotalNumAr2[i] = aliceCaseTotalNumAr[indices[i]];
+					bobCaseNumPresentAr2[i] = bobCaseNumPresentAr[indices[i]];
+					bobCaseTotalNumAr2[i] = bobCaseTotalNumAr[indices[i]];
+					aliceControlNumPresentAr2[i] = aliceControlNumPresentAr[indices[i]];
+					aliceControlTotalNumAr2[i] = aliceControlTotalNumAr[indices[i]];
+					bobControlNumPresentAr2[i] = bobControlNumPresentAr[indices[i]];
+					bobControlTotalNumAr2[i] = bobControlTotalNumAr[indices[i]];
+			}
+	
+			res = compute2(gen, aliceCaseNumPresentAr2, aliceCaseTotalNumAr2, 
+					bobCaseNumPresentAr2, bobCaseTotalNumAr2,
+					aliceControlNumPresentAr2, aliceControlTotalNumAr2,
+					bobControlNumPresentAr2, bobControlTotalNumAr2, numFiltered);
 		}
-
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			for(int j =0; j<res.length; j++){

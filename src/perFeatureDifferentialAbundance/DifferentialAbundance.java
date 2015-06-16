@@ -208,8 +208,8 @@ public class DifferentialAbundance {
 
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
-			T result;
-			
+			T[] result = gen.newTArray(1);
+			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			boolean[] filteredFeatures = new boolean[numOfTests];
 			for(int i =0; i < numOfTests; i++){				
 				aliceCaseNumPresent =gen.newTArray(Width);
@@ -230,16 +230,18 @@ public class DifferentialAbundance {
 				bobControlNumPresent = gen.inputOfBob(new boolean[Width]);
 				bobControlNumOfSamples = gen.inputOfBob(new boolean[Width]);
 				
-				result = filter(gen, aliceCaseNumPresent, aliceCaseNumOfSamples, 
+				result[0] = filter(gen, aliceCaseNumPresent, aliceCaseNumOfSamples, 
 					bobCaseNumPresent, bobCaseNumOfSamples,
 					aliceControlNumPresent, aliceControlNumOfSamples,
 					bobControlNumPresent, bobControlNumOfSamples);
-				filteredFeatures[i] = gen.outputToAlice(result);
+				boolean [] out = cl.declassifyToBoth2(result);
+				filteredFeatures[i] = out[0];
 			}
 				
 			for(int i = 0; i < numOfTests; i++){
 				if(!(filteredFeatures[i])){
-					res[i] = dummyVariable(gen);
+					res[i][0] = l;
+					res[i][1] = l;
 					continue;
 				}
 				aliceCaseTotalSum = gen.newTArray(Width);
@@ -374,8 +376,8 @@ public class DifferentialAbundance {
 
 		@Override
 		public void secureCompute(CompEnv<T> gen) {			
-		T result;
-		
+		T[] result = gen.newTArray(1);
+		CircuitLib<T> cl = new CircuitLib<T>(gen);
 		boolean[] filteredFeatures = new boolean[numOfTests];
 		for(int i =0; i < numOfTests; i++){				
 			aliceCaseNumPresent =gen.newTArray(Width);
@@ -395,17 +397,19 @@ public class DifferentialAbundance {
 			aliceControlNumOfSamples = gen.inputOfAlice(Utils.fromInt(controlNumOfSamples[i], Width));
 			bobControlNumPresent = gen.inputOfBob(new boolean[Width]);
 			bobControlNumOfSamples = gen.inputOfBob(new boolean[Width]);
-			
-			result = filter(gen, aliceCaseNumPresent, aliceCaseNumOfSamples, 
+
+			result[0] = filter(gen, aliceCaseNumPresent, aliceCaseNumOfSamples, 
 				bobCaseNumPresent, bobCaseNumOfSamples,
 				aliceControlNumPresent, aliceControlNumOfSamples,
 				bobControlNumPresent, bobControlNumOfSamples);
-			filteredFeatures[i] = gen.outputToAlice(result);
+			boolean [] out = cl.declassifyToBoth2(result);
+			filteredFeatures[i] = out[0];
 		}
 			
 		for(int i = 0; i < numOfTests; i++){
 			if(!(filteredFeatures[i])){
-				res[i] = dummyVariable(gen);
+				res[i][0] = l;
+				res[i][1] = l;
 				continue;
 			}
 			aliceCaseTotalSum = gen.newTArray(Width);

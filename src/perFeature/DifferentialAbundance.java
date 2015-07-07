@@ -106,7 +106,7 @@ public class DifferentialAbundance {
 		degreesOfFreedomBottomFirst = flib.multiply(flib.add(zero,degreesOfFreedomBottomFirst), flib.add(zero,degreesOfFreedomBottomFirst));
 		degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, one));
 
-		T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, one));
+		T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(controlNum, one));
 		degreesOfFreedomBottomSecond = flib.multiply(flib.add(zero,degreesOfFreedomBottomSecond), flib.add(zero,degreesOfFreedomBottomSecond));
 		degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, one));
 

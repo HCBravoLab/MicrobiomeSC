@@ -14,8 +14,11 @@ public class PrepareData {
 	public static void CountFre(Statistics dataCounts, String[] content) {
 		dataCounts.sumOfSquares = 0.0;
 		for(int i = 1; i < content.length; i++){
-			dataCounts.sumOfSquares += (Double.parseDouble((content[i]))*Double.parseDouble((content[i])));
-			dataCounts.totalSum += Double.parseDouble((content[i]));
+			if(Double.parseDouble(content[i]) > 0.0){
+				dataCounts.sumOfSquares += (Double.parseDouble((content[i]))*Double.parseDouble((content[i])));
+				dataCounts.totalSum += Double.parseDouble((content[i]));
+				dataCounts.numOfPresent++;
+			}
 		}
 		dataCounts.numOfSamples = content.length-1;
 	}

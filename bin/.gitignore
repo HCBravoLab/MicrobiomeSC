@@ -1,4 +1,9 @@
-/oddsRatioFilter/
-/differentialAbundanceFilter/
-/differentialAbundance/
+/alphaDiversity/
+/chiSquare/
 /chiSquareFilter/
+/differentialAbundance/
+/differentialAbundanceFilter/
+/naive/
+/oddsRatio/
+/oddsRatioFilter/
+/perFeature/

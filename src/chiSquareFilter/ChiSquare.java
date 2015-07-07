@@ -175,13 +175,13 @@ public class ChiSquare {
 		T[][] res;
 		int[] indices;
 		int numFiltered;
-
+		boolean[] filResOut;
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			numFiltered = 0;
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
-			boolean[] filResOut = gen.outputToAlice(filterRes);
+			filResOut = gen.outputToAlice(filterRes);
 			//gen.outputToBob(filterRes);
 			for(int i =0; i < numOfTests; i++){
 				gen.channel.writeBoolean(filResOut[i]);
@@ -192,6 +192,7 @@ public class ChiSquare {
 
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
+				indices[i] = -1;
 				if(filResOut[i]){
 					indices[numFiltered] = i;
 					numFiltered++;
@@ -228,7 +229,7 @@ public class ChiSquare {
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			for(int i = 0; i < numOfTests; i++){
 				double chi;
-				if(indicesArL.contains(i)){
+				if(!filResOut[i]){
 					chi = 0.0;
 				}
 				else{
@@ -340,6 +341,7 @@ public class ChiSquare {
 		int[] indices;
 
 		int numFiltered;
+		boolean[] filResOut;
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			numFiltered = 0;
@@ -349,7 +351,7 @@ public class ChiSquare {
 			//gen.outputToBob(filterRes);
 			gen.outputToAlice(filterRes);
 			//boolean[] filResOut = gen.outputToAlice(filterRes);
-			boolean[] filResOut = new boolean[numOfTests];
+			filResOut = new boolean[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				filResOut[i] = gen.channel.readBoolean();
 				gen.channel.flush();
@@ -357,6 +359,7 @@ public class ChiSquare {
 			//System.out.println(filRes[0]);
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
+				indices[i] = -1;
 				if(filResOut[i]){
 					indices[numFiltered] = i;
 					numFiltered++;
@@ -393,7 +396,7 @@ public class ChiSquare {
 				indicesArL.add(indices[i]);
 			}
 			for(int i = 0; i < numOfTests; i++){
-				if(indicesArL.contains(i)){
+				if(!filResOut[i]){
 					continue;
 				}
 				else{

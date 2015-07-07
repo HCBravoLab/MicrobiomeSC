@@ -35,6 +35,7 @@
 ./src/perFeature/PrepareDataNaive.java
 ./src/perFeature/OddsRatio.java
 ./src/perFeature/PrepareDataDA.java
+./src/perFeature/CopyOfAlphaDiversity.java
 ./src/perFeatureOddsRatio/PrepareData.java
 ./src/perFeatureOddsRatio/OddsRatio.java
 ./src/perFeatureOddsRatio/Statistics.java

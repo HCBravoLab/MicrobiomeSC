@@ -171,13 +171,13 @@ public class OddsRatio {
 		T[][] res;
 		int[] indices;
 		int numFiltered;
-
+		boolean[] filResOut;
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			numFiltered = 0;
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
-			boolean[] filResOut = gen.outputToAlice(filterRes);
+			filResOut = gen.outputToAlice(filterRes);
 			//gen.outputToBob(filterRes);
 			for(int i =0; i < numOfTests; i++){
 				gen.channel.writeBoolean(filResOut[i]);
@@ -213,8 +213,7 @@ public class OddsRatio {
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			FloatLib<T> flib = new FloatLib<T>(gen, FWidth, FOffset);
-			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
-			System.out.println("chi,p-value");
+			System.out.println("odds ratio");
 			boolean[] out;
 			int counter = 0;
 			HashSet<Integer> indicesArL = new HashSet<Integer>();
@@ -224,7 +223,7 @@ public class OddsRatio {
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			for(int i = 0; i < numOfTests; i++){
 				double chi;
-				if(indicesArL.contains(i)){
+				if(!filResOut[i]){
 					chi = 0.0;
 				}
 				else{
@@ -232,13 +231,7 @@ public class OddsRatio {
 					chi = Utils.toFloat(out, FWidth, FOffset);
 					counter++;
 				}
-				//gen.outputToAlice(res[i]);
-				//double chi = flib.outputToAlice(res[i]);// * extraFactor;
-				if(chi == 0.0){
-					System.out.println("NA,NA");
-					continue;
-				}
-				System.out.println(chi + "," + (1-chiDistribution.cumulativeProbability(chi)));
+				System.out.println(chi);
 			}
 		}
 	}
@@ -336,6 +329,7 @@ public class OddsRatio {
 		int[] indices;
 
 		int numFiltered;
+		boolean[] filResOut;
 		@Override
 		public void secureCompute(CompEnv<T> gen) {
 			numFiltered = 0;
@@ -345,7 +339,7 @@ public class OddsRatio {
 			//gen.outputToBob(filterRes);
 			gen.outputToAlice(filterRes);
 			//boolean[] filResOut = gen.outputToAlice(filterRes);
-			boolean[] filResOut = new boolean[numOfTests];
+			filResOut = new boolean[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				filResOut[i] = gen.channel.readBoolean();
 				gen.channel.flush();
@@ -389,7 +383,7 @@ public class OddsRatio {
 				indicesArL.add(indices[i]);
 			}
 			for(int i = 0; i < numOfTests; i++){
-				if(indicesArL.contains(i)){
+				if(!filResOut[i]){
 					continue;
 				}
 				else{

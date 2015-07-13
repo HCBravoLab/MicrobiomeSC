@@ -1,1 +1,0 @@
-java -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.EvaRunnable sparseOptimized.OddsRatio -s sparseData/pgp_case_2_nozeros_transpose.txt -t sparseData/pgp_control_2_nozeros_transpose.txt

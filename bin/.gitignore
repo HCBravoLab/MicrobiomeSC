@@ -7,3 +7,8 @@
 /oddsRatio/
 /oddsRatioFilter/
 /perFeature/
+/perFeatureChiSquare/
+/perFeatureDifferentialAbundance/
+/perFeatureOddsRatio/
+/perFeatureSparse/
+/sparse/

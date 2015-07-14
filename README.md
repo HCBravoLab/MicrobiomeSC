@@ -1,7 +1,7 @@
 # MicrobiomeSC
 
 This code compute Presence/Absence, Differential Abundance, and Alpha Diversity testing 
-over OTU data in a privacy-preserving manner using garbled circuits.
+over OTU data in a secure manner using garbled circuits.
 
 In order to use this code:
 

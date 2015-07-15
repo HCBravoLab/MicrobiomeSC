@@ -1,1 +1,1 @@
-java -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.EvaRunnable differentialAbundance.DifferentialAbundance figData/mali_case2_transpose.txt figData/mali_control2_transpose.txt $1
+java -cp lib/*:bin/: util.EvaRunnable precompute.DifferentialAbundance -s data/countryData/mali_case2_transpose.txt -t data/countryData/mali_control2_transpose.txt 

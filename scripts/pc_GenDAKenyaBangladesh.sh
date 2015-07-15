@@ -1,1 +1,1 @@
-java -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.GenRunnable differentialAbundance.DifferentialAbundance figData/kenya_caseKB_transpose.txt figData/kenya_controlKB_transpose.txt $1
+java -cp lib/*:bin/: util.GenRunnable precompute.DifferentialAbundance -s data/countryData/kenya_caseKB_transpose.txt -t data/countryData/kenya_controlKB_transpose.txt

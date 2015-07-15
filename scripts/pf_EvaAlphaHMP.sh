@@ -1,1 +1,1 @@
-java -cp lib/*:bin/:../FlexSC/lib/*:../FlexSC/bin util.EvaRunnable perFeature.AlphaDiversity -s data/hmp_species_case_part2_nozeros_transpose.txt -t data/hmp_species_control_part2_nozeros_transpose.txt
+java -cp lib/*:bin/: util.EvaRunnable perFeatureNaive.AlphaDiversity -s data/hmp_species_case_part2_nozeros_transpose.txt -t data/hmp_species_control_part2_nozeros_transpose.txt

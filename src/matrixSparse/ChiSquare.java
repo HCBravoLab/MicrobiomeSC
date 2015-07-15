@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package sparse;
+package matrixSparse;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -30,6 +30,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
 import util.EvaRunnable;
 import util.GenRunnable;
@@ -39,7 +40,7 @@ import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
 
-public class OddsRatio {
+public class ChiSquare {
 	static int width= 54;
 	static int offset = 11;
 	static public<T> T[][] compute(CompEnv<T> gen, T[][][] aliceCase, 
@@ -122,7 +123,14 @@ public class OddsRatio {
 			T[] fc = ilib.toSecureFloat(c, flib);
 			T[] fd = ilib.toSecureFloat(d, flib);
 			
-			res[i] = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
+			T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
+			T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));
+			upperSecond = flib.multiply(upperSecond, upperSecond);
+			T[] upper = flib.multiply(upperFirst, upperSecond);
+			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
+			
+			res[i] = flib.div(upper, lower);
+			//res[i] = fa;
 		}
 		return res;
 	}
@@ -269,12 +277,20 @@ public class OddsRatio {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			System.out.println("odds ratio");
+			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
+			System.out.println("chi,p-value");
 			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			//IntegerLib<T> ilib = new IntegerLib<T>(gen);
 
 			for(int i = in.length-1; i >= 0; i--){
-				double odds_ratio = flib.outputToAlice(in[i]);
-				System.out.println(odds_ratio);
+				double chi = flib.outputToAlice(in[i]);
+				//double chi = ilib.outputToAlice(in[i]);
+
+				if(chi == 0.0){
+					System.out.println("NA,NA");
+					continue;
+				}
+				System.out.println(chi + "," + (1-chiDistribution.cumulativeProbability(chi)));
 			}
 		}
 	}
@@ -429,8 +445,10 @@ public class OddsRatio {
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
+			//IntegerLib<T> ilib = new IntegerLib<T>(gen);
 			for(int j =in.length-1; j>=0; j--){
 				flib.outputToAlice(in[j]);
+				//ilib.outputToAlice(in[j]);
 			}
 		}
 				

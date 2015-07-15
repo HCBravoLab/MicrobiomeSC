@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package denseNaive;
+package matrixDense;
 
 import naiveF.PrepareDataNaive;
 
@@ -39,7 +39,7 @@ import circuits.arithmetic.FloatLib;
 import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
 
-public class ChiSquare {
+public class OddsRatio {
 	static int PLength = 54;
 	static int VLength = 11;
 	static public<T> T[][] compute(CompEnv<T> gen, T[][][] inputAliceCase, 
@@ -97,23 +97,10 @@ public class ChiSquare {
 			T[] fb = ilib.toSecureFloat(b, flib);
 			T[] fc = ilib.toSecureFloat(c, flib);
 			T[] fd = ilib.toSecureFloat(d, flib);
-			
-			T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
-			T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));
-			upperSecond = flib.multiply(upperSecond, upperSecond);
-			T[] upper = flib.multiply(upperFirst, upperSecond);
-			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
-			res[i] = flib.div(upper, lower);
+			res[i] = flib.div(flib.multiply(fa, fd), flib.multiply(fb, fc));
 		}
 		
 		return res;
-		
-		//System.arraycopy(outControl[2], 0, outCase[3], 0, inputCounters[0].length);
-
-		//System.arraycopy(res[0], 0, outCase[4], 0, inputCounters[0].length);
-
-		//return outCase;
-		//return inCase;
 	}
 	
 	public static class Generator<T> extends GenRunnable<T> {
@@ -300,8 +287,6 @@ public class ChiSquare {
 			System.out.println("Gen Case Dim 2 " + GenCaseDim2);
 			System.out.println("Gen Control Dim 1 " + GenControlDim1);
 			System.out.println("Gen Control Dim 2 " + GenControlDim2);
-			
-
 
 			inputAliceCase = gen.newTArray(GenCaseDim1, GenCaseDim2, 0);
 			for (int i = 0; i < GenCaseDim1; i++) {

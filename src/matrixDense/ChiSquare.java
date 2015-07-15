@@ -22,31 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-package denseNaive;
+package matrixDense;
 
-import naiveF.PrepareDataDANaive;
+import naiveF.PrepareDataNaive;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
-import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.distribution.ChiSquaredDistribution;
 
 import util.EvaRunnable;
 import util.GenRunnable;
 import util.Utils;
 import circuits.arithmetic.FloatLib;
+import circuits.arithmetic.IntegerLib;
 import flexsc.CompEnv;
 
-public class DifferentialAbundance {
+public class ChiSquare {
 	static int PLength = 54;
 	static int VLength = 11;
-	static public<T> T[][][] compute(CompEnv<T> gen, T[][][] inputAliceCase, 
+	static public<T> T[][] compute(CompEnv<T> gen, T[][][] inputAliceCase, 
 			T[][][] inputBobCase, T[][][] inputAliceControl, T[][][] inputBobControl){//, T[][][] inputAliceControl, T[][][] inputBobControl){
 		T[][][] inCase = gen.newTArray((inputAliceCase.length + inputBobCase.length)/2 , inputAliceCase[0].length + inputBobCase[0].length, 0);
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);
 		T[] zero = flib.publicValue(0.0);
-		T [] pointOne = flib.publicValue(0.000001);
+
 		for(int i = 0; i < (inputAliceCase.length + inputBobCase.length)/2; i++){
 			System.arraycopy(inputAliceCase[i], 0, inCase[i], 0, inputAliceCase[i].length);
 			System.arraycopy(inputBobCase[i], 0, inCase[i], inputAliceCase[i].length, inputBobCase[i].length);
@@ -59,89 +61,59 @@ public class DifferentialAbundance {
 		}
 
 		T[][] caseSum = gen.newTArray(inCase.length,0);
-		T[][] caseSumOfSquares = gen.newTArray(inCase.length,0);
 
 		for(int i = 0; i < inCase.length; i++){
-			caseSum[i] = inCase[i][0];
-			caseSumOfSquares[i] = inCase[i][0];
+			caseSum[i] = ilib.publicValue(0.0);
 		}
 		
 		for(int i = 0; i < inCase.length; i++){
 			for (int j = 0; j < inCase[0].length; j++){
-				caseSum[i] = flib.add(caseSum[i], inCase[i][j]);
-				caseSumOfSquares[i] = flib.add(caseSumOfSquares[i], 
-						flib.multiply(flib.add(pointOne, inCase[i][j]), flib.add(pointOne,inCase[i][j])));
+				caseSum[i] = ilib.add(caseSum[i], inCase[i][j]);
 			}
 		}
 		
 		T[][] controlSum = gen.newTArray(inControl.length,0);
-		T[][] controlSumOfSquares = gen.newTArray(inControl.length,0);
-
 		for(int i = 0; i < inControl.length; i++){
-			controlSum[i] = inControl[i][0];
-			controlSumOfSquares[i] = inControl[i][0];
+			controlSum[i] = ilib.publicValue(0.0);
 		}
 		
 		for(int i = 0; i < inControl.length; i++){
 			for (int j = 0; j < inControl[0].length; j++){
-				controlSum[i] = flib.add(controlSum[i], inControl[i][j]);
-				controlSumOfSquares[i] = flib.add(controlSumOfSquares[i], 
-						flib.multiply(flib.add(pointOne, inControl[i][j]), flib.add(pointOne,inControl[i][j])));
+				controlSum[i] = ilib.add(controlSum[i], inControl[i][j]);
 			}
 		}
 		
-		T[] caseNum = flib.publicValue(inCase[0].length);
-		T[] controlNum = flib.publicValue(inControl[0].length);
-		T[] tStat;
-		T[][][] res = gen.newTArray(inCase.length,2,0);
+		T[] caseNum = ilib.publicValue(inCase[0].length);
+		T[] controlNum = ilib.publicValue(inControl[0].length);
+		T[][] res = gen.newTArray(inCase.length, 0);
 		
-		for(int i = 0; i < inCase.length; i++){	
-			T[] caseTotalSum;
-			T[] controlTotalSum;
-
-			T[] caseVariance;
-			T[] controlVariance;
-			T[] caseVarianceSecondTerm;
-			T[] controlVarianceSecondTerm;
-			T[] caseMeanAbundance;
-			T[] controlMeanAbundance;
-			T[] tUpper;
-			T[] tLowerFirst;
-			T[] tLowerSecond;
-			T[] tLowerSqrt;
-
-			caseTotalSum = caseSum[i];
-			controlTotalSum = controlSum[i];
-
-			caseMeanAbundance = flib.div(caseTotalSum, caseNum);
-			caseVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, caseTotalSum), flib.add(pointOne,caseTotalSum)), caseNum);
-			caseVariance = flib.div(flib.sub(caseSumOfSquares[i], caseVarianceSecondTerm), caseNum);
-			controlMeanAbundance = flib.div(controlTotalSum, controlNum);		    
-			controlVarianceSecondTerm = flib.div(flib.multiply(flib.add(pointOne, controlTotalSum), flib.add(pointOne, controlTotalSum)), controlNum);
-			controlVariance = flib.div(flib.sub(controlSumOfSquares[i], controlVarianceSecondTerm), controlNum);
-
-			tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
-			tLowerFirst = flib.div(caseVariance, caseNum);
-			tLowerSecond = flib.div(controlVariance, controlNum);
-			tLowerSqrt = flib.sqrt(flib.add(tLowerFirst, tLowerSecond));
-			tStat = flib.div(tUpper, tLowerSqrt);
-
-			T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
-			degreesOfFreedomTop = flib.multiply(flib.add(pointOne, degreesOfFreedomTop), flib.add(pointOne, degreesOfFreedomTop));
-
-			T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-			degreesOfFreedomBottomFirst = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomFirst), flib.add(pointOne, degreesOfFreedomBottomFirst));
-			degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, flib.publicValue(1.0)));
-
-			T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(caseNum, flib.publicValue(1.0)));
-			degreesOfFreedomBottomSecond = flib.multiply(flib.add(pointOne, degreesOfFreedomBottomSecond), flib.add(pointOne, degreesOfFreedomBottomSecond));
-			degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, flib.publicValue(1.0)));
-
-			T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
-			res[i][0] = tStat;
-			res[i][1] = degreesOfFreedom;
+		for(int i = 0; i < inCase.length; i++){
+			T[] a = caseSum[i];
+			T[] b = ilib.sub(caseNum, a);
+			T[] c = controlSum[i];
+			T[] d = ilib.sub(controlNum, c);
+			
+			T[] fa = ilib.toSecureFloat(a, flib);
+			T[] fb = ilib.toSecureFloat(b, flib);
+			T[] fc = ilib.toSecureFloat(c, flib);
+			T[] fd = ilib.toSecureFloat(d, flib);
+			
+			T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
+			T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));
+			upperSecond = flib.multiply(upperSecond, upperSecond);
+			T[] upper = flib.multiply(upperFirst, upperSecond);
+			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
+			res[i] = flib.div(upper, lower);
 		}
+		
 		return res;
+		
+		//System.arraycopy(outControl[2], 0, outCase[3], 0, inputCounters[0].length);
+
+		//System.arraycopy(res[0], 0, outCase[4], 0, inputCounters[0].length);
+
+		//return outCase;
+		//return inCase;
 	}
 	
 	public static class Generator<T> extends GenRunnable<T> {
@@ -150,7 +122,7 @@ public class DifferentialAbundance {
 		T[][][] inputAliceControl;
 		T[][][] inputBobControl;
 		T[][][] inputCounters;
-		T[][][] in;
+		T[][] in;
 		
 		T[] aliceCaseNum;
 		T[] bobCaseNum;
@@ -169,10 +141,10 @@ public class DifferentialAbundance {
 			if(!cmd.hasOption("s") || !cmd.hasOption("t")) {
 			  throw new Exception("wrong input");
 			}
-			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+			IntegerLib<T> flib = new IntegerLib<T>(gen, 32);
 			T[] l = flib.publicValue(0.0);
-			double[][] caseInput = PrepareDataDANaive.readFile(cmd.getOptionValue("s"));
-			double[][] controlInput = PrepareDataDANaive.readFile(cmd.getOptionValue("t"));
+			int[][] caseInput = PrepareDataNaive.readFile(cmd.getOptionValue("s"));
+			int[][] controlInput = PrepareDataNaive.readFile(cmd.getOptionValue("t"));
 			for(int i = 0; i < caseInput.length; i++){
 				for(int j =0; j < caseInput[0].length; j++){
 					System.out.print(caseInput[i][j] + " ");
@@ -214,7 +186,7 @@ public class DifferentialAbundance {
 			inputAliceCase = gen.newTArray(GenCaseDim1, GenCaseDim2, 0);
 			for (int i = 0; i < GenCaseDim1; i++) {
 				for (int j = 0; j < GenCaseDim2; j++) {
-					inputAliceCase[i][j] = gen.inputOfAlice(Utils.fromFloat(caseInput[i][j], PLength, VLength));
+					inputAliceCase[i][j] = gen.inputOfAlice(Utils.fromInt(caseInput[i][j], 32));
 				}
 			}
 			gen.flush();
@@ -232,10 +204,9 @@ public class DifferentialAbundance {
 			inputAliceControl = gen.newTArray(GenControlDim1, GenControlDim2, 0);
 			for (int i = 0; i < GenControlDim1; i++) {
 				for (int j = 0; j < GenControlDim2; j++) {
-					inputAliceControl[i][j] = gen.inputOfAlice(Utils.fromFloat(controlInput[i][j], PLength, VLength));
+					inputAliceControl[i][j] = gen.inputOfAlice(Utils.fromInt(controlInput[i][j], 32));
 				}
 			}
-
 			gen.flush();
 			System.out.println("Done with inputAliceControl gen");
 			inputBobControl = gen.newTArray(EvaControlDim1, EvaControlDim2, 0);
@@ -255,25 +226,16 @@ public class DifferentialAbundance {
 		}
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
-			for(int j = 0; j < in.length; j++){
-				double tStat = flib.outputToAlice(in[j][0]);
-				double df = flib.outputToAlice(in[j][1]);
-				if (tStat == 0.0){
-					System.out.println("NA,NA,NA");
+			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
+			System.out.println("chi,p-value");
+			for(int i = 0; i < in.length; i++){
+				double chi = Utils.toFloat(gen.outputToAlice(in[i]), PLength, VLength);
+				if(chi == 0.0){
+					System.out.println("NA,NA");
 					continue;
 				}
-				if (df <= 0.0){
-					System.out.println(tStat +",NA,NA");
-					continue;
-				}
-				TDistribution tDistribution = new TDistribution(df);
-				if(tStat > 0.0)
-					System.out.println(tStat + "," + df + "," + (1-tDistribution.cumulativeProbability(tStat))*2.0);
-				else
-					System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
-
-			}			
+				System.out.println(chi + "," + (1-chiDistribution.cumulativeProbability(chi)));
+			}	
 		}
 	}
 	
@@ -284,7 +246,7 @@ public class DifferentialAbundance {
 		T[][][] inputAliceControl;
 		T[][][] inputBobControl;
 		T[] scResult;
-		T[][][] in;
+		T[][] in;
 		@Override
 		public void prepareInput(CompEnv<T> gen) throws Exception {
 			Options options = new Options();
@@ -298,10 +260,10 @@ public class DifferentialAbundance {
 			  throw new Exception("wrong input");
 			}
 
-			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
+			IntegerLib<T> flib = new IntegerLib<T>(gen, 32);
 			T[] l = flib.publicValue(0.0);
-			double[][] caseInput = PrepareDataDANaive.readFile(cmd.getOptionValue("s"));
-			double[][] controlInput = PrepareDataDANaive.readFile(cmd.getOptionValue("t"));
+			int[][] caseInput = PrepareDataNaive.readFile(cmd.getOptionValue("s"));
+			int[][] controlInput = PrepareDataNaive.readFile(cmd.getOptionValue("t"));
 			for(int i = 0; i < caseInput.length; i++){
 				for(int j =0; j < caseInput[0].length; j++){
 					System.out.print(caseInput[i][j] + " ");
@@ -354,7 +316,7 @@ public class DifferentialAbundance {
 			inputBobCase = gen.newTArray(EvaCaseDim1, EvaCaseDim2, 0);
 			for (int i = 0; i < EvaCaseDim1; i++) {
 				for (int j = 0; j < EvaCaseDim2; j++) {
-					inputBobCase[i][j] = gen.inputOfBob(Utils.fromFloat(caseInput[i][j], PLength, VLength));
+					inputBobCase[i][j] = gen.inputOfBob(Utils.fromInt(caseInput[i][j], 32));
 				}
 			}
 			
@@ -374,7 +336,7 @@ public class DifferentialAbundance {
 			inputBobControl = gen.newTArray(EvaControlDim1, EvaControlDim2, 0);		
 			for (int i = 0; i < EvaControlDim1; i++) {
 				for (int j = 0; j < EvaControlDim2; j++) {
-					inputBobControl[i][j] = gen.inputOfBob(Utils.fromFloat(controlInput[i][j], PLength, VLength));
+					inputBobControl[i][j] = gen.inputOfBob(Utils.fromInt(controlInput[i][j], 32));
 				}
 			}
 
@@ -392,10 +354,8 @@ public class DifferentialAbundance {
 		
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
-			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
-			for(int i = 0; i < in.length; i++){
-				flib.outputToAlice(in[i][0]);
-				flib.outputToAlice(in[i][1]);
+			for(int j =0; j<in.length; j++){
+				gen.outputToAlice(in[j]);
 			}
 		}
 				

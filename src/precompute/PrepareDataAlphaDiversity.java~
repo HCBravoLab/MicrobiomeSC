@@ -1,0 +1,46 @@
+package precompute;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+import precompute.StatisticsAlphaDiversity;
+
+public class PrepareDataAlphaDiversity {
+
+	public static void CountFre(StatisticsAlphaDiversity dataCounts, String[] content) {
+		dataCounts.rowSum = 0.0;
+		dataCounts.simpsonsIndex = 0.0;
+		for(int i = 1; i < content.length; i++){
+			dataCounts.rowSum += Double.parseDouble((content[i]));
+		}
+		for(int i = 1; i < content.length; i++){
+			dataCounts.simpsonsIndex += (Math.pow((Double.parseDouble(content[i])/dataCounts.rowSum),2));
+		}
+		dataCounts.simpsonsSumOfSquares += Math.pow(dataCounts.simpsonsIndex, 2);
+		dataCounts.simpsonsIndexTotalSum += dataCounts.simpsonsIndex;
+		dataCounts.numOfSamples = content.length-1;
+		dataCounts.numOfSimpsonsIndices++;
+	}
+
+	public static StatisticsAlphaDiversity readFile(String filename) {
+		File file = new File(filename);
+		Scanner scanner; 
+		StatisticsAlphaDiversity sta = new StatisticsAlphaDiversity();
+		sta.simpsonsSumOfSquares = 0.0;
+		sta.simpsonsIndexTotalSum = 0.0;
+		try {
+			scanner = new Scanner(file);
+			String line = scanner.nextLine();
+			while(scanner.hasNextLine()) {
+				line = scanner.nextLine();
+				String[] counts = line.split(" ");
+				CountFre(sta, counts);
+			}
+			scanner.close();			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		return sta;
+	}
+}

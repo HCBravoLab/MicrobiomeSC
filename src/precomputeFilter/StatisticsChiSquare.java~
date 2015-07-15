@@ -1,0 +1,6 @@
+package precomputeFilter;
+
+public class StatisticsChiSquare {
+	public int numOfPresent;
+	public int totalNum;
+}

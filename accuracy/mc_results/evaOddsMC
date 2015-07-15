@@ -1,0 +1,22 @@
+connecting
+connected
+Bob case num 20
+Bob control num 23
+Num counters eva 221111
+Eva Case Num eva252078
+Gen Case Num eva263631
+Eva Control Num eva292224
+Gen Control Num eva273337
+Done with inputCounters eva
+Done with inputAliceCase eva
+Done with sorting bob case
+Done with inputBobCase eva
+Done with inputAliceControl eva
+Done with inputBobControl eva
+Eva running time:823.662733936
+Number Of AND Gates:23286335898
+
+********************************
+Data Sent from Client :267.84192657470703MB
+Data Sent to Client :239.06031036376953MB
+********************************

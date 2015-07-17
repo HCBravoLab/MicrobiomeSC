@@ -1,6 +1,0 @@
-package precompute;
-
-public class StatisticsChiSquare {
-	public int numOfPresent;
-	public int totalNum;
-}

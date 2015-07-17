@@ -1,8 +1,0 @@
-package precompute;
-
-
-
-public class StatisticsOddsRatio {
-	public int numOfPresent;
-	public int totalNum;
-}

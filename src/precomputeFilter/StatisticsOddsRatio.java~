@@ -1,6 +1,0 @@
-package precomputeFilter;
-
-public class StatisticsOddsRatio {
-	public int numOfPresent;
-	public int totalNum;
-}

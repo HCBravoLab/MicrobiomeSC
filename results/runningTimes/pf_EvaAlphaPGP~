@@ -9,11 +9,10 @@ Gen Case Dim 2 277
 Gen Control Dim 1 42
 Gen Control Dim 2 277
 Done with inputBobControl eva
-Eva running time:1327.769452168
-Number Of AND Gates:736550099
+Eva running time:27.732014535
+Number Of AND Gates:1090208594
 
 ********************************
-Data Sent from Client :30.323477745056152MB
-Data Sent to Client :21118.007161140442MB
+Data Sent from Client :5.9976806640625MB
+Data Sent to Client :5.927940368652344MB
 ********************************
-

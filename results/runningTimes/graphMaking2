@@ -1,0 +1,451 @@
+data = read.csv("runningTimesToPlot")
+data
+barplot(as.matrix(autos_data), main="Autos", ylab= "Total",
+barplot(as.matrix(data), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(4))
+barplot(as.matrix(data), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(4), log=TRUE)
+barplot(as.matrix(data), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(4), log="TRUE")
+barplot(as.matrix(data), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(4), log)
+
+chiSquare = data[3,]
+chiSquare
+oddsRatio = data[11,]
+oddsRatio
+da = data[19,]
+alpha = data[26,]
+
+mat
+barplot(as.matrix(log(mat)), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(4))
+barplot(as.matrix(log(t(mat))), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(4))
+barplot(as.matrix(log(t(mat))), main="Autos", ylab= "Total",beside=TRUE, col=rainbow(3))
+barplot(as.matrix(log(t(mat))), main="Autos", ylab= "Total",beside=TRUE)
+barplot(as.matrix(log(t(mat))), main="Autos", ylab= "Total")
+barplot(as.matrix(log(t(mat))), main="Autos", ylab= "Total",beside=TRUE)
+barplot(as.matrix(log(t(mat)))~HMP, main="Autos", ylab= "Total")
+barplot(as.matrix(log(t(mat))), main="", ylab= "Total", xlab=c("chi","odds","da","alpha"))
+barplot(as.matrix(log(t(mat))), main="", ylab= "Total", xlab=c("chi","odds","da","alpha"), beside=TRUE)
+barplot(as.matrix(log(t(mat))), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE)
+barplot(as.matrix(log(t(mat))), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(10,50,70))
+barplot(as.matrix(log(t(mat))), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,30,40))
+barplot(as.matrix(log(t(mat))), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,50,70))
+barplot(as.matrix((t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,50,70))
+)
+barplot(as.matrix((t(mat), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,50,70))
+barplot(as.matrix(t(mat), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,50,70))
+)
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,50,70))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, density=c(20,50,70), log="y")
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y")
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(.001,100000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(.001,1000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(.0001,10000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,10000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,1000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,100000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,1000000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,10000000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,100000000000))
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,1000000000000))
+mat
+barplot(as.matrix(t(mat)), main="", ylab= "Total", names=c("chi","odds","da","alpha"), beside=TRUE, log="y", ylim=c(1,1000000000000))
+library(ggplot2)
+qplot(t(mat))
+df = data.frame(t(mat))
+df
+qplot(df, x=x)
+qplot(df)
+colnames(df) <- c("Chi Square", "Odds", "DA", "Alpha")
+df
+qplot(df)
+qplot(data=df)
+qplot(x=colname(df), data=df)
+qplot(x=colnames(df), data=df)
+qplot(x=y, data=df)
+mat
+l = as.list(mat)
+l
+unlist(l)
+mat
+l = c(mat[1,])
+;
+
+l = mat[1,]
+l
+list(mat[1,],mat[2,])
+unlist(mat[1,],mat[2,])
+flatten(mat[1,],mat[2,])
+mat[1,]
+mat[2,]
+mat[3,]
+mat[4,]
+as.vector(mat)
+mat
+as.vector(mat)
+as.vector(t(mat))
+barplot(as.vector(t(mat)))
+l = c("chi", "chi", "chi", "chi", "chi", "chi", "chi", "chi", 
+"chi")
+l
+l = c("chi", "chi", "chi", "chi", "chi", "chi", "chi", "chi", "chi", "odds", "odds", "odds", "odds", "odds", "odds", "odds", "odds", "odds","da", "da", "da", "da", "da", "da", "da", "da", "da","alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha", "alpha")
+as.matrix(as.vector(mat), l)
+data.frame(mat, l)
+mat
+data.frame(l)
+data.frame(l, mat[1,])
+as.vector(mat)
+mat
+typeof(mat)
+as.matrix(mat)
+as.vector(as.matrix(mat))
+as.vector(as.matrix(t(mat)))
+data.frame(as.vector(as.matrix(t(mat))),l)
+data.frame(as.matrix(t(mat)),l)
+data.frame(as.vector(t(mat)),l)
+circuitSize = as.vector(t(mat))
+testName = l
+data.frame(testName, circuitSize)
+as.vector(t(colnames(mat)))
+as.vector(t(colnames(mat)))*3
+c(as.vector(t(colnames(mat))), as.vector(t(colnames(mat))), as.vector(t(colnames(mat))))
+c(as.vector(t(colnames(mat))), as.vector(t(colnames(mat))), as.vector(t(colnames(mat))), as.vector(t(colnames(mat)))
+)
+dataset = c(as.vector(t(colnames(mat))), as.vector(t(colnames(mat))), as.vector(t(colnames(mat))), as.vector(t(colnames(mat))))
+data.frame(testName, circuitSize, dataset))
+data.frame(testName, circuitSize, dataset)
+
+qplot(results, x = testName)
+ggplot(data=tips, aes(x=day)) +
+ggplot(data=results, aes(x=testName), geom="bar")
+ggplot(data=results, aes(x=testName), geom_bar="stat=identity")
+results
+ggplot(data=results, aes(x=testName, y=circuitSize), geom_bar="stat=identity")
+ggplot(data=results, aes(x=testName, y=circuitSize))
+ggplot(data=results, aes(x=testName, y=circuitSize) + geom_bar="stat=identity")
+ggplot(data=results, aes(x=testName, y=circuitSize) + geom_bar(stat="identity"))
+ggplot(data=results, aes(x=testName, y=circuitSize))
+ggplot(data=dat, aes(x=time, y=total_bill)) +
+    geom_bar(stat="identity")
+ggplot(data=dat, aes(x=time, y=total_bill)) + geom_bar(stat="identity"))
+ggplot(data=dat, aes(x=time, y=total_bill)) + geom_bar(stat="identity")
+ggplot(data=dat, aes(x=time, y=total_bill) + geom_bar(stat="identity"))
+ggplot(data=results, aes(x=time, y=total_bill) + geom_bar(stat="identity"))
+ggplot(data=results, aes(x=testName, y=circuitSize) + geom_bar(stat="identity"))
+ggplot(data=results, aes(y=circuitSize) + geom_bar(stat="identity"))
+ggplot(data=results, aes(y=circuitSize))
+qplot(x=group, y=mean, fill=variable,
+                       data=means, geom="bar", stat="identity",
+                       position="dodge")
+qplot(x=testName, y=circuitSize, fill=variable, data=results, geom="bar")
+qplot(x=testName, y=circuitSize, data=results, geom="bar")
+qplot(x=testName, y=circuitSize, data=results, geom_bar)
+qplot(x=testName, y=circuitSize, data=results, geom_bar, stat="identity))
+)
+qplot(x=testName, y=circuitSize, data=results, geom_bar, stat="identity"))
+qplot(x=testName, y=circuitSize, data=results, geom_bar, stat="identity")
+ggplot(x=testName, y=circuitSize, data=results, geom_bar, stat="identity")
+ggplot(aes(x=testName, y=circuitSize), data=results, geom_bar, stat="identity")
+ggplot(aes(x=testName, y=circuitSize), data=results, geom_bar(stat="identity"))
+ggplot(aes(x=testName, y=circuitSize), data=results + geom_bar(stat="identity"))
+ggplot(results, aes(x=testName, y=circuitSize) + geom_bar(stat="identity"))
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity")
+ggplot(log(results), aes(x=testName, y=circuitSize)) + geom_bar(stat="identity")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity")
+ggplot(results, aes(x=testName, y=circuitSize), log10="y") + geom_bar(stat="identity")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_y_continuous("testName, log10-scaling", formatter = fmtExpLg10)
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_y_continuous("testName, log10-scaling")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_y_continuous()
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_y_continuous("testName")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_y_continuous("circuitSize")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_x_continuous("circuitSize")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + +
+   facet_wrap(~Type,nrow=3)
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + facet_wrap(~dataset, nrow=3)
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + facet_wrap(~dataset)
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + facet_wrap(~dataset)
+ggplot(results, aes(x=testName, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, datasety=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, dataset, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, fill.asFactor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=testName, fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(dataset$testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=factor(circuitSize, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive")) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=factor(circuitSize, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive"))) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=factor(circuitSize, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive")))) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(factor(testName, levels=c("chi", "odds", "da", "alpha")),levels=c(, fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(factor(testName, levels=c("chi", "odds", "da", "alpha")),levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(factor(testName, levels=c("chi", "odds", "da", "alpha")),levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), fill = as.factor(dataset), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill = as.factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill = factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text')     
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive")), y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text')     
+legend = l=factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive"))
+legend = factor(dataset, levels=c("HMP.PC", "HMP.Sparse", "HMP.Naive", "PGP.PC", "PGP.Sparse", "PGP.Naive", "MSD.PC", "MSD.Sparse", "MSD.Naive"))
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text')     
+results
+mat
+alpha = data[27,]
+l
+circuitSize
+mat[4,] = alpha
+mat
+circuitSize = as.vector(t(mat))
+data.frame(testName, circuitSize, dataset)
+results = data.frame(testName, circuitSize, dataset)
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text')     
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank())
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + +
+    scale_fill_brewer()
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_brewer()
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#999999", "#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#007208", "#007204", "#D55E00", "#D55E04", "#D55E08", "#CC79A7", "#CC79B1", "#CC79B5", "#CC79B9")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#007208", "#007204", "#D55E00", "#D55E04", "#D55E08", "#CC79B1", "#CC79B1", "#CC79B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#0072B2", "#0072B2", "#D55E00", "#D55E00", "#D55E00", "#CC79B1", "#CC79B1", "#CC79B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#0072B2", "#0072B2", "#D55E00", "#D55E00", "#D55E00", "#CC79B1", "#CC79B1", "#CC83B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#0072B2", "#0072B2", "#D55E00", "#D55E00", "#D55E00", "#CC59B1", "#CC69B1", "#CC79B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#0072B2", "#0072B2", "#D55E00", "#D55E00", "#D55E00", "#CC39B1", "#CC59B1", "#CC79B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0072B2", "#0072B2", "#0072B2", "#D51E00", "#D53E00", "#D55E00", "#CC39B1", "#CC59B1", "#CC79B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+cbPalette <- c("#0032B2", "#0052B2", "#0072B2", "#D51E00", "#D53E00", "#D55E00", "#CC39B1", "#CC59B1", "#CC79B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+cbPalette <- c("#0072B2", "#0052B2", "#0032B2", "#D55E00", "#D53E00", "#D51E00", "#CC79B1", "#CC59B1", "#CC39B1")
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+l
+results
+testName
+testName[1] = "Chi-Square"
+testName
+testName[2\] = "Chi-Square"
+testName[2] = "Chi-Square"
+testName[3] = "Chi-Square"
+testName[4] = "Chi-Square"
+testName[5] = "Chi-Square"
+testName[5:9] = "Chi-Square"
+testName
+testName[10:19] = "Odds Ratio"
+testName
+testName[19:27] = "Odds Ratio"
+testName
+testName[19:27] = "Differential Abundance"
+testName
+testName[28:36] = "Alpha Diversity"
+testName
+
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+TestName = factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity"))
+ggplot(results, aes(x=factor(testName, levels=c("chi", "odds", "da", "alpha")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=TestName),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=TestName),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=TestName),fill=legend, y=circuitSize) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity"))),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette) + theme_bw()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank()) + scale_fill_manual(values=cbPalette)
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(), text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+circuitSizePlot = ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(), text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+    postscript(file = paste(filename, '.eps', sep=""), width = width, height = height)
+    print(gplot)
+    dev.off()
+    postscript(file = paste("circuitSize", '.eps', sep=""), width = 2, height = 1.5)
+    print(circuitSizePlot)
+    dev.off()
+dev.off()
+postscript(file = paste("circuitSize", '.eps', sep=""))
+circuitSizePlot = ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(), text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+dev.off()
+postscript(file = paste("circuitSize", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(), text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+dev.off()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(), text = element_text(size=20), axis.title.y = "Number of Non-Free Gates") + scale_fill_manual(values=cbPalette) + 
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("circuitSize") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(), text = element_text(size=20), axis.title.y = "Number of Non-Free Gates") + scale_fill_manual(values=cbPalette)
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+postscript(file = paste("circuitSize", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette)
+dev.off()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+postscript(file = paste("circuitSize", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+dev.off()
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+dev.off()
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=25)) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+dev.off()
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20)) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+dev.off()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=20,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+dev.off()
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature")
+dev.off()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") + annotation_logticks(
+)
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") + annotation_logticks("l")
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") + annotation_logticks(sides="l")
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") + annotation_logticks(sides="l")
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(1,10,100,1000,10000,10000,1000000,10000000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(1,10,100,1000,10000,10000,1000000,10000000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(1,10,100,1000,10000,100000,1000000,10000000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+postscript(file = paste("circuitSizePerFeature", '.eps', sep=""))
+ggplot(results, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=circuitSize)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(1,10,100,1000,10000,100000,1000000,10000000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+data
+savehistory("graphMaking")
+chiSquare
+chiSquareTime = data[6,]
+oddsRatio
+oddsRatioTime = data[14,]
+da
+data
+daTime = data[22,]
+alphaTime = data[30,]
+as.matrix(chiSquareTime, oddsRatioTime, daTime, alphaTime)
+as.matrix(c(chiSquareTime, oddsRatioTime, daTime, alphaTime))
+matTime = matrix()
+matTime
+matTime[1,] = chiSquareTime
+matTime = matrix(4,9)
+matTime
+matTime = matrix(1,4,9)
+matTime
+matTime[1,] = chiSquareTime
+matTime
+matTime
+matTime = matrix(1,4,9)
+matTIme
+matTime
+matTime[1,1:9] = chiSquareTime
+matTime
+matTime[1,1:9] = unlist(chiSquareTime)
+matTime = matrix(1,4,9)
+matTime[1,1:9] = unlist(chiSquareTime)
+matTime
+matTime[2,1:9] = unlist(oddsRatioTime)
+matTime[3,1:9] = unlist(daTime)
+matTime[4,1:9] = unlist(alphaTime)
+matTime
+runningTime = as.vector(t(matTime))
+resultsTime = data.frame(testName, runningTime, dataset)
+resultsTime
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(.001,.01,.1,1,10,100,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(.001,.01,.1,1,10,100,1000), limits=c(0.001,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(.001,.01,.1,1,10,100,1000), limits=c(0,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(.001,.01,.1,1,10,100,1000)) + ylim(.001,1000) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(0, .001,.01,.1,1,10,100,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(0,.001,.01,.1,1,10,100,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", breaks=c(.001,.01,.1,1,10,100,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature", limits=c(0,1000)) + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+resultsTime
+resultsTime[runningTime,36]
+resultsTime['runningTime',36]
+resultsTime['runningTime']
+resultsTime['runningTime'][36]
+resultsTime['runningTime']
+resultsTime[['runningTime',36]]
+resultsTime[['runningTime']]
+resultsTime[['runningTime']][36]
+resultsTime[['runningTime']][36] <- NA
+resultsTime
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+dev.off()
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(stat="identity") + scale_y_log10("Number of Non-Free Gates Per Feature") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Circuit Size Per Feature") 
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Minutes") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=log(runningTime))) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") 
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=log(runningTime))) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-2))
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + scale_y_log10("Minutes") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") 
+dev.off()
+linerange
+mylog_trans <- function(base=exp(1), from=0) 
+{
+  trans <- function(x) log(x, base)-from
+  inv <- function(x) base^(x+from)
+  trans_new("mylog", trans, inv, log_breaks(base=base), 
+            domain = c(base^from, Inf))
+}
+# 
+c + scale_y_continuous(trans = mylog_trans(base=10, from=-2)) # starts from 1e-2 
+require(scales)
+mylog_trans <- function(base=exp(1), from=0) 
+{
+  trans <- function(x) log(x, base)-from
+  inv <- function(x) base^(x+from)
+  trans_new("mylog", trans, inv, log_breaks(base=base), 
+            domain = c(base^from, Inf))
+}
+# 
+c + scale_y_continuous(trans = mylog_trans(base=10, from=-2)) # starts from 1e-2 
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-2))
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-2))
+dev.off()
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-2),breaks=c(.001,.01,.1,1,10,100,1000))
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-2),breaks=c(.001,.01,.1,1,10,100,1000))
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-3),breaks=c(.001,.01,.1,1,10,100,1000))
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-3),breaks=c(.001,.01,.1,1,10,100,1000), "Minutes")
+dev.off()
+postscript(file = paste("runningTimeMinutes", '.eps', sep=""))
+ggplot(resultsTime, aes(x=factor(testName, levels=c("Chi-Square", "Odds Ratio", "Differential Abundance", "Alpha Diversity")),fill=legend, y=runningTime)) + geom_bar(position="dodge", stat="identity") + labs(aesthetic='custom text') + theme_bw() + theme(axis.title.x = element_blank(),text = element_text(size=18,face="bold")) + scale_fill_manual(values=cbPalette) + ggtitle("Running Time") + scale_y_continuous(trans = mylog_trans(base=10, from=-3),breaks=c(.001,.01,.1,1,10,100,1000,10000), "Minutes")
+dev.off()
+savehistory("graphMaking2")

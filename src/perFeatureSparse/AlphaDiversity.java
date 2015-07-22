@@ -283,7 +283,6 @@ public class AlphaDiversity {
 					caseCounter = 0;
 					for(int j =0; j < caseInput[i].length; j++){
 						if(caseInput[i][j] > 0.0){
-							//inputAliceCase[caseCounter++] = gen.inputOfAlice(Utils.fromFloat(caseInput[i][j], PLength, VLength));
 							inputAliceCase[caseCounter++] = Utils.fromFloat(caseInput[i][j], PLength, VLength);
 						}
 					}
@@ -292,9 +291,6 @@ public class AlphaDiversity {
 				}
 				for(int i = 0; i < EvaCaseFeaturesNum; i++){
 					inputBobCase = new boolean[EvaCaseSamples[i]][l.length];
-					//for(int j =0; j < EvaCaseSamples[i]; j++){
-						//inputBobCase[j] = gen.inputOfBob(new boolean[l.length]);
-					//}
 					gen.flush();
 					simpsonsResBobCase[i] = computeSimpsons(gen, gen.inputOfBob(inputBobCase));
 				}
@@ -303,7 +299,6 @@ public class AlphaDiversity {
 					controlCounter = 0;
 					for(int j =0; j < controlInput[i].length; j++){
 						if(controlInput[i][j] > 0.0){
-							//inputAliceControl[controlCounter++] = gen.inputOfAlice(Utils.fromFloat(controlInput[i][j], PLength, VLength));
 							inputAliceControl[controlCounter++] = Utils.fromFloat(controlInput[i][j], PLength, VLength);
 
 						}
@@ -313,9 +308,6 @@ public class AlphaDiversity {
 				}
 				for(int i = 0; i < EvaControlFeaturesNum; i++){
 					inputBobControl = new boolean[EvaControlSamples[i]][l.length];
-					//for(int j =0; j < EvaControlSamples[i]; j++){
-						//inputBobControl[j] = gen.inputOfBob(new boolean[l.length]);
-					//}
 					gen.flush();
 					simpsonsResBobControl[i] = computeSimpsons(gen, gen.inputOfBob(inputBobControl));
 				}
@@ -344,7 +336,6 @@ public class AlphaDiversity {
 				System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
 			
 			
-			//System.out.println(tStat + " " + df);
 		}	
 	}
 	
@@ -477,9 +468,6 @@ public class AlphaDiversity {
 			int controlCounter = 0;
 				for(int i =0; i < GenCaseFeaturesNum; i++){
 					inputAliceCase = new boolean[GenCaseSamples[i]][l.length];
-					//for(int j =0; j < GenCaseSamples[i]; j++){
-						//inputAliceCase[j] = gen.inputOfAlice(new boolean[l.length]);
-					//}
 					gen.flush();
 					simpsonsResAliceCase[i] = computeSimpsons(gen, gen.inputOfAlice(inputAliceCase));
 				}
@@ -488,7 +476,6 @@ public class AlphaDiversity {
 					caseCounter = 0;
 					for(int j =0; j < caseInput[i].length; j++){
 						if(caseInput[i][j] > 0.0){
-							//inputBobCase[caseCounter++] = gen.inputOfBob(Utils.fromFloat(caseInput[i][j], PLength, VLength));
 							inputBobCase[caseCounter++] = Utils.fromFloat(caseInput[i][j], PLength, VLength);
 						}
 					}
@@ -497,9 +484,6 @@ public class AlphaDiversity {
 				}
 				for(int i =0; i < GenControlFeaturesNum; i++){
 					inputAliceControl = new boolean[GenControlSamples[i]][l.length];
-					//for(int j =0; j < GenControlSamples[i]; j++){
-						//inputAliceControl[j] = gen.inputOfAlice(new boolean[l.length]);
-					//}
 					gen.flush();
 					simpsonsResAliceControl[i] = computeSimpsons(gen, gen.inputOfAlice(inputAliceControl));
 				}
@@ -509,7 +493,6 @@ public class AlphaDiversity {
 					for(int j =0; j < controlInput[i].length; j++){
 						if(controlInput[i][j] > 0.0){
 							inputBobControl[controlCounter++] = Utils.fromFloat(controlInput[i][j], PLength, VLength);
-							//inputBobControl[controlCounter++] = gen.inputOfBob(Utils.fromFloat(controlInput[i][j], PLength, VLength));
 						}
 					}
 					gen.flush();
@@ -525,7 +508,6 @@ public class AlphaDiversity {
 			FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 			flib.outputToAlice(alphaDiversityRes[0]);
 			flib.outputToAlice(alphaDiversityRes[1]);
-			//flib.outputToAlice(simpsonsResBobControl[0]);
 		}
 				
 	}

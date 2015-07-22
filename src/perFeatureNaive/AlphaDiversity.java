@@ -54,7 +54,7 @@ public class AlphaDiversity {
 		T[] simpsonsLower = flib.publicValue(0.0);
 		
 		for(int j = 0; j < input.length; j++){
-			inputAdjusted = flib.sub(input[j], pointOne);//flib.sub(flib.add(input[j], pointOne), pointOne);
+			inputAdjusted = flib.sub(input[j], pointOne);
 			simpsonsUpper = flib.add(simpsonsUpper, flib.multiply(inputAdjusted, flib.sub(inputAdjusted, one)));
 			simpsonsLower = flib.add(simpsonsLower, inputAdjusted);
 		}

@@ -254,13 +254,10 @@ public class DifferentialAbundance {
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
 			boolean[] filResOut = gen.outputToAlice(filterRes);
-			//gen.outputToBob(filterRes);
 			for(int i =0; i < numOfTests; i++){
 				gen.channel.writeBoolean(filResOut[i]);
 				gen.channel.flush();
 			}
-			//boolean[] filResOut = cl.declassifyToBoth(filterRes);
-			//boolean[] filResOut = gen.outputToBob(filterRes);
 
 			indices = new int[numOfTests];
 			
@@ -317,22 +314,6 @@ public class DifferentialAbundance {
 					counter++;
 				}
 				System.out.println(tStat + "," + df);
-
-				/*
-				if (tStat == 0.0){
-					System.out.println("NA,NA,NA");
-					continue;
-				}
-				if (df <= 0.0){
-					System.out.println(tStat +",NA,NA");
-					continue;
-				}
-				TDistribution tDistribution = new TDistribution(df);
-				if(tStat > 0.0)
-					System.out.println(tStat + "," + df + "," + (1-tDistribution.cumulativeProbability(tStat))*2.0);
-				else
-					System.out.println(tStat + "," + df + "," +  tDistribution.cumulativeProbability(tStat)*2.0);
-			*/
 			}
 		}
 	}
@@ -430,16 +411,12 @@ public class DifferentialAbundance {
 			numFiltered = 0;
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
-			//boolean[] filResOut = cl.declassifyToBoth(filterRes);
-			//gen.outputToBob(filterRes);
 			gen.outputToAlice(filterRes);
-			//boolean[] filResOut = gen.outputToAlice(filterRes);
 			boolean[] filResOut = new boolean[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				filResOut[i] = gen.channel.readBoolean();
 				gen.channel.flush();
 			}
-			//System.out.println(filRes[0]);
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				indices[i] = -1;

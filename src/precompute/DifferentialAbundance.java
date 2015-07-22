@@ -114,32 +114,6 @@ public class DifferentialAbundance {
 			degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, one));
 
 			T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst, degreesOfFreedomBottomSecond));
-			/*
-			T[] tUpper = flib.sub(controlMeanAbundance, caseMeanAbundance);
-			T tLowerFirstIsZero = flib.eq(caseNumPresent, zero);
-			T[] tLowerFirst = flib.div(caseVariance, caseNum);
-			tLowerFirst = cl.mux(tLowerFirst, zero, tLowerFirstIsZero);
-			
-			T tLowerSecondIsZero = flib.eq(controlNumPresent, zero);
-			T[] tLowerSecond = flib.div(controlVariance, controlNum);
-			tLowerSecond = cl.mux(tLowerSecond, zero, tLowerSecondIsZero);
-			
-			T[] tLowerSqrt = flib.sqrt(flib.add(tLowerFirst,tLowerSecond));
-			T[] tStatNonZero = flib.div(tUpper, tLowerSqrt);
-			
-			T[] degreesOfFreedomTop = flib.add(tLowerFirst, tLowerSecond);
-			degreesOfFreedomTop = flib.multiply(degreesOfFreedomTop, degreesOfFreedomTop);
-
-			T[] degreesOfFreedomBottomFirst = flib.div(caseVariance, flib.sub(caseNum, one));
-			degreesOfFreedomBottomFirst = flib.multiply(degreesOfFreedomBottomFirst,degreesOfFreedomBottomFirst);
-			degreesOfFreedomBottomFirst = flib.div(degreesOfFreedomBottomFirst, flib.sub(caseNum, one));
-
-			T[] degreesOfFreedomBottomSecond = flib.div(controlVariance, flib.sub(controlNum, one));
-			degreesOfFreedomBottomSecond = flib.multiply(degreesOfFreedomBottomSecond,degreesOfFreedomBottomSecond);
-			degreesOfFreedomBottomSecond = flib.div(degreesOfFreedomBottomSecond, flib.sub(controlNum, one));
-
-			T[] degreesOfFreedom = flib.div(degreesOfFreedomTop, flib.add(degreesOfFreedomBottomFirst,degreesOfFreedomBottomSecond));
-			*/
 			T[] oneInt = ilib.publicValue(1.0);
 			
 			T caseIsOne = ilib.eq(caseNumPresent, oneInt);

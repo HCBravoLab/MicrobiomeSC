@@ -103,7 +103,6 @@ public class ChiSquare {
 			T[] upper = flib.multiply(upperFirst, upperSecond);
 			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
 			res[i] = flib.div(upper, lower);
-			//res[i] = fa;
 		}
 		
 		return res;
@@ -206,13 +205,11 @@ public class ChiSquare {
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
 			filResOut = gen.outputToAlice(filterRes);
-			//gen.outputToBob(filterRes);
-			for(int i =0; i < numOfTests; i++){
+			
+                        for(int i =0; i < numOfTests; i++){
 				gen.channel.writeBoolean(filResOut[i]);
 				gen.channel.flush();
 			}
-			//boolean[] filResOut = cl.declassifyToBoth(filterRes);
-			//boolean[] filResOut = gen.outputToBob(filterRes);
 
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
@@ -261,8 +258,6 @@ public class ChiSquare {
 					chi = Utils.toFloat(out, FWidth, FOffset);
 					counter++;
 				}
-				//gen.outputToAlice(res[i]);
-				//double chi = flib.outputToAlice(res[i]);// * extraFactor;
 				if(chi == 0.0){
 					System.out.println("NA,NA");
 					continue;
@@ -314,11 +309,6 @@ public class ChiSquare {
 			boolean[][][] caseData2 = new boolean[caseSta.length][2][Width];
 			boolean[][][] caseData3 = new boolean[caseSta.length][2][Width];
 
-/*
-			gen.channel.writeInt(caseInput.numberOftuples);
-			gen.channel.writeInt(controlInput.numberOftuples);
-			gen.channel.flush();
-*/			
 			for(int i = 0; i < caseSta.length; ++i) {
 				caseData[i][0] = Utils.fromInt(caseSta[i].numOfPresent, Width);
 				caseData[i][1] = Utils.fromInt(caseSta[i].totalNum - caseSta[i].numOfPresent, Width);
@@ -371,16 +361,12 @@ public class ChiSquare {
 			numFiltered = 0;
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
-			//boolean[] filResOut = cl.declassifyToBoth(filterRes);
-			//gen.outputToBob(filterRes);
 			gen.outputToAlice(filterRes);
-			//boolean[] filResOut = gen.outputToAlice(filterRes);
 			filResOut = new boolean[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				filResOut[i] = gen.channel.readBoolean();
 				gen.channel.flush();
 			}
-			//System.out.println(filRes[0]);
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				indices[i] = -1;
@@ -427,10 +413,7 @@ public class ChiSquare {
 					Utils.toFloat(gen.outputToAlice(res[counter]), FWidth, FOffset);
 					counter++;
 				}
-				//flib.outputToAlice(res[i]);
-
 			}
-				//cl.declassifyToBoth(res[i]);
 		}
 	}
 }

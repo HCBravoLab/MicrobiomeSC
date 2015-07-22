@@ -45,7 +45,7 @@ public class AlphaDiversity {
 	static int offset = 11;
 	static public<T> T[][] compute(CompEnv<T> gen, T[][] inputCounters, T[][][] inputAliceCase, 
 			T[][][] inputBobCase, T[][][] inputAliceControl, T[][][] inputBobControl,
-			T[] aliceCaseNum, T[] bobCaseNum, T[] aliceControlNum, T[] bobControlNum){//, T[][][] inputAliceControl, T[][][] inputBobControl){
+			T[] aliceCaseNum, T[] bobCaseNum, T[] aliceControlNum, T[] bobControlNum){
 
 		BitonicSortLib<T> lib = new BitonicSortLib<T>(gen);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen);

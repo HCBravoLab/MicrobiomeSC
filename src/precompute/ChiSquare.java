@@ -67,19 +67,11 @@ public class ChiSquare {
 			T[] b = lib.add(aliceCase[i][1], bobCase[i][1]);
 			T[] c = lib.add(aliceControl[i][0], bobControl[i][0]);
 			T[] d = lib.add(aliceControl[i][1], bobControl[i][1]);
-			//T[] g = lib.add(a, c);
-			//T[] k = lib.add(b, d);
 
 			T[] fa = lib.toSecureFloat(a, flib);
 			T[] fb = lib.toSecureFloat(b, flib);
 			T[] fc = lib.toSecureFloat(c, flib);
 			T[] fd = lib.toSecureFloat(d, flib);
-			//T[] fg = lib.toSecureFloat(g, flib);
-			//T[] fk = lib.toSecureFloat(k, flib);
-
-			//T[] tmp = flib.sub(flib.multiply(fa, fd), flib.multiply(fb, fc));
-			//tmp = flib.multiply(tmp, tmp);
-			//res[i] = flib.div(tmp, flib.multiply(fg, fk));
 
 			T[] upperFirst = flib.add(fa, flib.add(fb, flib.add(fc, fd)));
 			T[] upperSecond = flib.sub(flib.multiply(fb, fc), flib.multiply(fa, fd));

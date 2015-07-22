@@ -22,10 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/*Original implementation of chi-square performed by xiao wang,
- *  modified by justin wagner to handle microbiome count data
- */
-
 package precomputeFilter;
 
 import java.util.ArrayList;
@@ -202,13 +198,10 @@ public class OddsRatio {
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
 			filResOut = gen.outputToAlice(filterRes);
-			//gen.outputToBob(filterRes);
 			for(int i =0; i < numOfTests; i++){
 				gen.channel.writeBoolean(filResOut[i]);
 				gen.channel.flush();
 			}
-			//boolean[] filResOut = cl.declassifyToBoth(filterRes);
-			//boolean[] filResOut = gen.outputToBob(filterRes);
 
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
@@ -302,11 +295,6 @@ public class OddsRatio {
 			boolean[][][] caseData2 = new boolean[caseSta.length][2][Width];
 			boolean[][][] caseData3 = new boolean[caseSta.length][2][Width];
 
-/*
-			gen.channel.writeInt(caseInput.numberOftuples);
-			gen.channel.writeInt(controlInput.numberOftuples);
-			gen.channel.flush();
-*/			
 			for(int i = 0; i < caseSta.length; ++i) {
 				caseData[i][0] = Utils.fromInt(caseSta[i].numOfPresent, Width);
 				caseData[i][1] = Utils.fromInt(caseSta[i].totalNum - caseSta[i].numOfPresent, Width);
@@ -359,16 +347,12 @@ public class OddsRatio {
 			numFiltered = 0;
 			CircuitLib<T> cl = new CircuitLib<T>(gen);
 			filterRes = filter(gen, aliceCase, bobCase, aliceControl, bobControl, numOfTests);
-			//boolean[] filResOut = cl.declassifyToBoth(filterRes);
-			//gen.outputToBob(filterRes);
 			gen.outputToAlice(filterRes);
-			//boolean[] filResOut = gen.outputToAlice(filterRes);
 			filResOut = new boolean[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				filResOut[i] = gen.channel.readBoolean();
 				gen.channel.flush();
 			}
-			//System.out.println(filRes[0]);
 			indices = new int[numOfTests];
 			for(int i = 0; i < numOfTests; i++){
 				if(filResOut[i]){
@@ -414,10 +398,7 @@ public class OddsRatio {
 					Utils.toFloat(gen.outputToAlice(res[counter]), FWidth, FOffset);
 					counter++;
 				}
-				//flib.outputToAlice(res[i]);
-
 			}
-				//cl.declassifyToBoth(res[i]);
 		}
 	}
 }

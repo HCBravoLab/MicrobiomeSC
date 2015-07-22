@@ -184,12 +184,6 @@ public class ChiSquare {
 						numControl++;
 					}
 				}
-				/*
-				numAliceCase = gen.inputOfAlice(Utils.fromInt(numCase, 32));
-				numBobCase = gen.inputOfBob(new boolean[32]);
-				numAliceControl = gen.inputOfAlice(Utils.fromInt(numControl, 32));
-				numBobControl = gen.inputOfBob(new boolean[32]);
-*/
 				inputAliceCase = gen.newTArray(GenCaseSamples, 0);
 				inputBobCase = gen.newTArray(EvaCaseSamples, 0);
 				inputAliceControl = gen.newTArray(GenControlSamples, 0);
@@ -324,12 +318,6 @@ public class ChiSquare {
 						numControl++;
 					}
 				}
-				/*
-				numAliceCase = gen.inputOfAlice(new boolean[32]);
-				numBobCase = gen.inputOfBob(Utils.fromInt(numCase, 32));
-				numAliceControl = gen.inputOfAlice(new boolean[32]);
-				numBobControl = gen.inputOfBob(Utils.fromInt(numControl, 32));
-				*/
 				inputAliceCase = gen.newTArray(GenCaseSamples, 0);
 				inputBobCase = gen.newTArray(EvaCaseSamples, 0);
 				inputAliceControl = gen.newTArray(GenControlSamples, 0);

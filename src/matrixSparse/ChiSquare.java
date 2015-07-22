@@ -45,7 +45,7 @@ public class ChiSquare {
 	static int offset = 11;
 	static public<T> T[][] compute(CompEnv<T> gen, T[][][] aliceCase, 
 			T[][][] bobCase, T[][][] aliceControl, T[][][] bobControl, T[][] inputCounters,
-			T[] aliceCaseNum, T[] bobCaseNum, T[] aliceControlNum, T[] bobControlNum){//, T[][][] inputAliceControl, T[][][] inputBobControl){
+			T[] aliceCaseNum, T[] bobCaseNum, T[] aliceControlNum, T[] bobControlNum){
 		
 		BitonicSortLib<T> lib = new BitonicSortLib<T>(gen);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen);
@@ -130,7 +130,6 @@ public class ChiSquare {
 			T[] lower = flib.multiply(flib.multiply(flib.add(fa, fb), flib.add(fa, fc)), flib.multiply(flib.add(fb, fd), flib.add(fc, fd)));
 			
 			res[i] = flib.div(upper, lower);
-			//res[i] = fa;
 		}
 		return res;
 	}
@@ -280,11 +279,9 @@ public class ChiSquare {
 			ChiSquaredDistribution chiDistribution = new ChiSquaredDistribution(1.0);
 			System.out.println("chi,p-value");
 			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
-			//IntegerLib<T> ilib = new IntegerLib<T>(gen);
 
 			for(int i = in.length-1; i >= 0; i--){
 				double chi = flib.outputToAlice(in[i]);
-				//double chi = ilib.outputToAlice(in[i]);
 
 				if(chi == 0.0){
 					System.out.println("NA,NA");
@@ -445,10 +442,8 @@ public class ChiSquare {
 		@Override
 		public void prepareOutput(CompEnv<T> gen) {
 			FloatLib<T> flib = new FloatLib<T>(gen, width, offset);
-			//IntegerLib<T> ilib = new IntegerLib<T>(gen);
 			for(int j =in.length-1; j>=0; j--){
 				flib.outputToAlice(in[j]);
-				//ilib.outputToAlice(in[j]);
 			}
 		}
 				

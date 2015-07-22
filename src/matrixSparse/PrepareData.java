@@ -21,9 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/*Original implementation of chi-square performed by xiao wang,
- *  modified by justin wagner to handle microbiome count data
- */
 
 package matrixSparse;
 

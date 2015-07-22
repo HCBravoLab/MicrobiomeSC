@@ -43,7 +43,7 @@ public class OddsRatio {
 	static int PLength = 54;
 	static int VLength = 11;
 	static public<T> T[][] compute(CompEnv<T> gen, T[][][] inputAliceCase, 
-			T[][][] inputBobCase, T[][][] inputAliceControl, T[][][] inputBobControl){//, T[][][] inputAliceControl, T[][][] inputBobControl){
+			T[][][] inputBobCase, T[][][] inputAliceControl, T[][][] inputBobControl){
 		T[][][] inCase = gen.newTArray((inputAliceCase.length + inputBobCase.length)/2 , inputAliceCase[0].length + inputBobCase[0].length, 0);
 		FloatLib<T> flib = new FloatLib<T>(gen, PLength, VLength);
 		IntegerLib<T> ilib = new IntegerLib<T>(gen, 32);

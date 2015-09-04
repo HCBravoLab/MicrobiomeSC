@@ -4,8 +4,7 @@ This project is the first module of secureSeq, a suite of secure sequencing anal
 
 The paper for this project is available at http://biorxiv.org/content/early/2015/09/02/025999. 
 
-This code computes Presence/Absence, Differential Abundance, and Alpha Diversity testing 
-over OTU data in a using garbled circuits.
+This code computes Presence/Absence, Differential Abundance, and Alpha Diversity testing over OTU data using garbled circuits.
 
 Dependencies: FlexSC (https://github.com/wangxiao1254/FlexSC) included as jar in lib/; Java 8 (jdk-1.8, jre-1.8)
 

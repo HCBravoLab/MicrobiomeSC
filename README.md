@@ -1,6 +1,6 @@
 # MicrobiomeSC
 
-This project is the first module of secureSeq, a suite secure sequencing analysis tools that is in development.
+This project is the first module of secureSeq, a suite of secure sequencing analysis tools that is in development.
 
 The paper for this project is available at http://biorxiv.org/content/early/2015/09/02/025999. 
 

@@ -17,7 +17,7 @@ To install this code first, clone this repository or download zip.
 
 Then, from the command-line run:
 
-::<$./compile.sh>:: 
+`$./compile.sh` 
 
 
 
